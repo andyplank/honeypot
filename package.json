@@ -1,0 +1,27 @@
+{
+    "name": "things",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "npx tsc server.ts"
+    },
+    "author": "Andy Plank",
+    "license": "MIT",
+    "dependencies": {
+        "@types/node": "20.3.2",
+        "@types/react": "18.2.14",
+        "@types/react-dom": "18.2.6",
+        "body-parser": "^1.20.2",
+        "cors": "^2.8.5",
+        "express": "^4.18.2",
+        "path": "^0.12.7"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.15",
+        "@types/express": "^4.17.20",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
+    }
+}
