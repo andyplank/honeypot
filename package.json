@@ -5,7 +5,8 @@
     "main": "server.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "npx tsc server.ts"
+        "start": "npx ts-node server.ts",
+        "build": "npx tsc server.ts"
     },
     "author": "Andy Plank",
     "license": "MIT",
@@ -16,7 +17,9 @@
         "body-parser": "^1.20.2",
         "cors": "^2.8.5",
         "express": "^4.18.2",
-        "path": "^0.12.7"
+        "path": "^0.12.7",
+        "uuid": "^9.0.1",
+        "ws": "^8.14.2"
     },
     "devDependencies": {
         "@types/cors": "^2.8.15",

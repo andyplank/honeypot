@@ -1,23 +1,17 @@
-import { getRooms, newRoom, submitAnswer } from './util';
+import { newConnection } from "./util";
 
 const { WebSocketServer } = require('ws');
 const http = require('http');
 
-import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
+// Spinning the http server and the WebSocket server.
+const server = http.createServer();
+const wsServer = new WebSocketServer({ server });
+const port = 8000;
+server.listen(port, () => {
+  console.log(`WebSocket server is running on port ${port}`);
+});
 
-const app = express();
-app.use(cors());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-app.use(express.static('public'));
-
-app.post('/new-room', newRoom);
-app.post('/submit-answer', submitAnswer);
-app.get('/get-rooms', getRooms);
-
-const server:any = app.listen(process.env.PORT || 8080, () => {
-    const port = server.address().port;
-    console.log(`I'm listening on ${port}`);
+// A new client connection request received
+wsServer.on('connection', function(connection: any) {
+    newConnection(connection);
 });

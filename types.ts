@@ -1,17 +1,21 @@
 export interface Player {
-    name: string;
-    points: number;
+    name: string,
+    id: string,
+    points: number,
+    answer: string
+    canGuess: boolean,
 }
 
 export interface Room {
-    code: string,
-    hostName: string,
+    roomCode: string,
+    hostId: string,
     players: Player[],
     currQuestion: string,
-    answers: Answer[]
+    remainingAnswers: string[],
+    firstPlayerIndex: number,
 }
 
-export interface Answer {
-    text: string,
-    playerName: string
+export interface Message {
+    type: string,
+    [key: string]: any;
 }
