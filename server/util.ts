@@ -196,7 +196,6 @@ function generateRandomString(length: number):string {
 }
 
 function getRoom(code: string): Room | null{
-    // TODO: Erorr checking
     if (code in rooms === false) {
         return null;
     }
@@ -208,10 +207,12 @@ function handleDisconnect(userId: string) {
     // loop over all the rooms and find any rooms with playerId = userId
     // if found, delete that player from the room
     const roomKeys = Object.keys(rooms);
+    if (roomKeys === undefined) { return }
     roomKeys.forEach((roomKey: string) => {
         const room = rooms[roomKey];
         const index = room.players.findIndex((player: Player) => player.id === userId);
         const player = room.players[index];
+        if (player === undefined) { return }
         const msg_body = {
             text: `Player ${player.name} has disconnected`
         }

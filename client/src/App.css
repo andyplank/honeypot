@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --main: #93C5FD;
+    --main-light: #E3F0FF;
+    --white: #ffffff;
+    --black: #000000;
+}
+
+/* Reset some default styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'DM Sans', sans-serif;   
+    color: var(--black);
+}
