@@ -1,7 +1,6 @@
 import { Room, Player, Message } from './types';
-const { WebSocket } = require('ws');
-
-const uuidv4 = require('uuid').v4;
+import { WebSocket } from 'ws';
+import { v4 as uuidv4 } from 'uuid';
 
 const rooms:any = {};
 const connections:any = {};
@@ -70,6 +69,8 @@ function createRoom(data: any, userId: any) {
         firstPlayerIndex: 0,
         currQuestion: "",
         remainingAnswers: [],
+        roundNumber: -1,
+        guessing: false,
     }
     rooms[room.roomCode] = room;
 
@@ -81,9 +82,10 @@ function createRoom(data: any, userId: any) {
 }
 
 function joinRoom(data: any, userId: any) {
+    if (data.name === undefined || data.room_code === undefined) { return }
     const player = createPlayer(data.name, userId);
     const room = getRoom(data.room_code);
-    if (room === null) { return }
+    if (room === null || room.roundNumber !== -1) { return }
 
     // User is already in the room
     const index = room.players.findIndex((player: Player) => player.id === userId);
@@ -105,8 +107,13 @@ function startGame(data: any, userId: string) {
     if (room.hostId !== userId) {
         return;
     }
+    room.roundNumber = 0;
+    for (let player of room.players) {
+        player.points = 0;
+    }
     const msg_body = {
-        text: `Starting game`
+        text: `Starting game`,
+        round: room.roundNumber
     }
     const msg = createMessage("start_game", msg_body);
     broadcastMessage(room, msg);
@@ -119,34 +126,67 @@ function submitAnswer(data: any, userId: string) {
     const room = getRoom(data.room_code);
     if (room === null) { return }
     const player = room.players.find((player: Player) => player.id === userId);
-    if (player === undefined || player.answer !== "") { return }
+    if (player === undefined || player.answer !== "" || room.guessing || room.roundNumber === -1) { return }
 
     player.answer = answer;
     room.remainingAnswers.push(answer);
+
+    // filter room.players to players which have an answer != ""
+    const playersWithAnswers = room.players.filter((player: Player) => player.answer !== "").map((player: Player) => player.name);
+    // map to only return the player name
     
+
     const msg_body = {
-        text: `${player.name} has submitted an answer`
+        text: `${player.name} has submitted an answer`,
+        submitted: playersWithAnswers
     }
     const msg = createMessage("new_room", msg_body);
     broadcastMessage(room, msg);
+
+    if (room.remainingAnswers.length === room.players.length) {
+        moveToGuess(room);
+    }
 }
+
+function moveToGuess(room: Room) {
+    room.guessing = true;
+    const msg_body = {
+        text: `Moving to guess`,
+        answers: room.remainingAnswers
+    }
+    const msg = createMessage("move_to_guess", msg_body);
+    broadcastMessage(room, msg);
+    const player = room.players[room.firstPlayerIndex];
+    if (player === undefined) { return }
+    player.canGuess = true;
+    setPlayerTurn(room, player);
+}
+
+function setPlayerTurn(room: Room, player: Player) {
+    if (player === undefined || !player.canGuess) { return }
+
+    const msg_body = {
+        text: `Player ${player.name} can guess`,
+        currentPlayer: player.name
+    }
+    const msg = createMessage("set_player_turn", msg_body);
+    broadcastMessage(room, msg);
+}
+
 
 function guess(data: any, userId: string) {
     const guessedPlayerName = data.guessed_player;
     const guessedAnswer = data.guessed_answer;
 
     const room = getRoom(data.room_code);
-    if (room === null) { return }
+    if (room === null || room.roundNumber === -1 || !room.guessing) { return }
 
     // Check if guessedAnswer is in remainingAnswers
     if (room.remainingAnswers.includes(guessedAnswer) === false) { return }
 
     const playerInd = room.players.findIndex((player: Player) => player.id === userId);
     const player = room.players[playerInd];
-    if (player === undefined) { return }
-    if (player.canGuess === false) { return }
-
-    if (guessedPlayerName === player.name) { return }
+    if (player === undefined || !player.canGuess || guessedPlayerName === player.name) { return }
 
     const guessedPlayer = room.players.find((player: Player) => player.name === guessedPlayerName);
     if (guessedPlayer === undefined) { return }
@@ -154,16 +194,43 @@ function guess(data: any, userId: string) {
     if (guessedPlayer.answer === guessedAnswer) {
         player.points += 1;
         room.remainingAnswers.splice(room.remainingAnswers.indexOf(guessedAnswer), 1);
+
+        const msg_body = {
+            text: `Correct guess! ${player.name} gets a point!`,
+            answers: room.remainingAnswers,
+            currentPlayer: player.name,
+            points: getPlayerPoints(room)   
+        }
+        const msg = createMessage("answers", msg_body);
+        broadcastMessage(room, msg);
+
+        if (room.remainingAnswers.length === 1) {
+            player.points += 1;
+            newRound(room.roomCode);
+        }
     } else {
         player.canGuess = false;
         const nextPlayerInd = (playerInd + 1)%room.players.length;
-        room.players[nextPlayerInd].canGuess = true;
+        const nextPlayer = room.players[nextPlayerInd];
+        if (nextPlayer === undefined) { return }
+        nextPlayer.canGuess = true;
+        setPlayerTurn(room, nextPlayer);
     }
+}
+
+function getPlayerPoints(room: Room) {
+    const points:any = {};
+    for (let player of room.players) {
+        points[player.name] = player.points;
+    }
+    return points;
 }
 
 function newRound (roomCode: string) {
     const room = getRoom(roomCode);
     if (room === null) { return }
+    room.guessing = false;
+    room.remainingAnswers = [];
 
     // Reset player answers and canGuess to true
     for (let player of room.players) {
@@ -171,14 +238,29 @@ function newRound (roomCode: string) {
         player.canGuess = false;
     }
 
+    room.firstPlayerIndex = (room.firstPlayerIndex + 1)%room.players.length;
     room.players[room.firstPlayerIndex].canGuess = true;
+
+    room.roundNumber += 1;
+    if (room.roundNumber > room.players.length) {
+        room.roundNumber = -1;
+        const msg_body = {
+            text: `Game over!`,
+            points: getPlayerPoints(room)
+        }
+        const msg = createMessage("end_game", msg_body);
+        broadcastMessage(room, msg);
+        return
+    }
 
     // TODO: Get questions from file
     const question = "What is the best color?";
     room.currQuestion = question;
     
     const msg_body = {
-        question: question
+        round: room.roundNumber,
+        question: question,
+        points: getPlayerPoints(room)   
     }
     const msg = createMessage("new_round", msg_body);
     broadcastMessage(room, msg);
@@ -211,8 +293,8 @@ function handleDisconnect(userId: string) {
     roomKeys.forEach((roomKey: string) => {
         const room = rooms[roomKey];
         const index = room.players.findIndex((player: Player) => player.id === userId);
+        if (index === -1) { return }
         const player = room.players[index];
-        if (player === undefined) { return }
         const msg_body = {
             text: `Player ${player.name} has disconnected`
         }
@@ -237,6 +319,12 @@ function createMessage(type: string, data: any) {
 
 // Send message to all clients in a room
 function broadcastMessage(room: Room, message:Message) {
+    const roomCode = room.roomCode;
+    message.room_code = roomCode;
+    message.round = room.roundNumber;
+    message.guessing = room.guessing;
+    message.points = getPlayerPoints(room);
+    message.players = room.players.map((player: Player) => player.name);
     const data = JSON.stringify(message);
     for (let player of room.players) {
         const client = connections[player.id];

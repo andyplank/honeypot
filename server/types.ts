@@ -13,6 +13,8 @@ export interface Room {
     currQuestion: string,
     remainingAnswers: string[],
     firstPlayerIndex: number,
+    roundNumber: number,
+    guessing: boolean,
 }
 
 export interface Message {
