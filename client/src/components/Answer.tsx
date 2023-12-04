@@ -1,13 +1,12 @@
 import {useState} from 'react';
 
-function Answer({roomCode, sendJsonMessage}: {roomCode: any, sendJsonMessage: any}) {
+function Answer({sendJsonMessage}: {sendJsonMessage: any}) {
         
     const [answer, setAnswer] = useState('');
 
     const submitAnswer = () => {
         sendJsonMessage({
             "type": "submit_answer",
-            "room_code": roomCode,
             "answer": answer
         });
     }

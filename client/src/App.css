@@ -7,6 +7,8 @@
     --main-light: #E3F0FF;
     --white: #ffffff;
     --black: #000000;
+    --purple: #77569F;
+    --light-purple: #e2d6f5;
 }
 
 /* Reset some default styles */
@@ -15,4 +17,16 @@ html, body {
     padding: 0;
     font-family: 'DM Sans', sans-serif;   
     color: var(--black);
+}
+
+.bg-white {
+    background-color: var(--white);
+}
+
+.bg-purple {
+    background-color: var(--purple);
+}
+
+.bg-light-purple {
+    background-color: var(--light-purple);
 }

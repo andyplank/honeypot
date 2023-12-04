@@ -1,6 +1,6 @@
 import {useState} from 'react';
 
-function Guess({roomCode, sendJsonMessage}: {roomCode: any, sendJsonMessage: any}) {
+function Guess({sendJsonMessage}: {sendJsonMessage: any}) {
         
     const [guessPlayer, setGuessPlayer] = useState('');
     const [guessAnswer, setGuessAnswer] = useState('');
@@ -9,7 +9,6 @@ function Guess({roomCode, sendJsonMessage}: {roomCode: any, sendJsonMessage: any
     const submitGuess = () => {
         sendJsonMessage({
             "type": "guess",
-            "room_code": roomCode,
             "guessed_player": guessPlayer,
             "guessed_answer": guessAnswer,
         });
