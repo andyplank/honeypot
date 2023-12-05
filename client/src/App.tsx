@@ -64,7 +64,7 @@ export default function App() {
 
 
 			<div className='bg-black pt-10'>
-				<h2>Debugging</h2>
+				<h4>Debugging</h4>
 				<div>
 				<p>WebSocket Status: {ReadyState[readyState]}</p>
 				<p>Last Message: {lastMessage && lastMessage.data}</p>

@@ -20,17 +20,17 @@ function Join({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
 
     return (
         <div className='bg-light-purple p-4'>
-            <div className='bg-white container mx-auto rounded p-4'>
+            <div className='container-box container p-4'>
                 <div>
                     <div>
-                        <h2 className='text-xl font-bold'>Hello!</h2>
-                        <h4 className='text-lg'>Enter your username</h4>
+                        <h2>Hello!</h2>
+                        <h4>Enter your username</h4>
                         <input name="username" value={username} onChange={(e) => setUsername(e.target.value)} type="text" className="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" />
                     </div>
                 </div>
-                <div className='pt-2'>
-                    <span className='pr-2'>Create new room</span>
-                    <button className='bg-purple rounded px-2 text-white' onClick={createRoom}>Create</button>
+                <div className='content-center pt-2'>
+                    <p className='pr-2'>Create new room</p>
+                    <button className='button-orange w-1/3' onClick={createRoom}>Create</button>
                 </div>
                 <div className='pt-2'>
                     <span> Or join an existing room</span>
