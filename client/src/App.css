@@ -10,13 +10,13 @@
     --purple: #C5ADEB;
     --light-purple: #e2d6f5;
     --green: #9AEDB6;
-    --orange: FDC474;
+    --orange: #FDC474;
 }
 
 h1 {
     color: #000;
     font-family: Mochiy Pop One;
-    font-size: 4rem;
+    font-size: 3.5rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -25,7 +25,7 @@ h1 {
 h2 {
     color: #000;
     font-family: Mochiy Pop One;
-    font-size: 3.125rem;
+    font-size: 2.5rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -34,7 +34,7 @@ h2 {
 h3 {
     color: #000;
     font-family: Mochiy Pop One;
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -43,7 +43,7 @@ h3 {
 h4 {
     color: #000;
     font-family: Mochiy Pop One;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -66,6 +66,17 @@ html, body {
     color: var(--black);
 }
 
+.orange-input {
+    font-family: Mochiy Pop One;
+    width: 100%;
+    height: 2rem;
+    border-bottom: 3px solid var(--orange);
+}
+
+:focus-visible {
+    outline: none;
+}
+
 .bg-white {
     background-color: var(--white);
 }
@@ -78,14 +89,9 @@ html, body {
     background-color: var(--light-purple);
 }
 
-.container-box {
-    background-color: #FFF;
-    box-shadow: drop-shadow(0px 4px 30px rgba(0, 0, 0, 0.50));
-}
-
 .button-orange {
-    border-radius: 1.25rem;
-    background: #FDC474;
+    border-radius: .5rem;
+    background-color: var(--orange);
 }
 
 .name-plate {
@@ -93,8 +99,4 @@ html, body {
     background: #FFF;
 }
 
-.answer-box {
-    fill: #FFF;
-    filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.14));
-}
 
