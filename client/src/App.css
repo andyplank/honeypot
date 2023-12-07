@@ -69,7 +69,7 @@ html, body {
 .orange-input {
     font-family: Mochiy Pop One;
     width: 100%;
-    height: 2rem;
+    height: auto;
     border-bottom: 3px solid var(--orange);
 }
 
