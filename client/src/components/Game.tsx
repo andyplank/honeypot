@@ -27,7 +27,7 @@ function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
 
     return (
         <div className="h-full">
-            <div className='grid grid-cols-3 gap-4 h-full'>
+            <div className='grid grid-cols-4 gap-4 h-full hidden sm:grid'>
                 <div className='bg-light-purple pb-4 pr-4'>
                     <h3 className='p-4'>Players</h3>
                     {players.map((player:string, idx:number) => (
@@ -36,12 +36,28 @@ function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
                         </h4>
                     ))}
                 </div>
-                <div className='col-span-2 bg-black'>
+                <div className='col-span-3'>
                     <div className='p-4'>
                         {guessOrAnswer()}
                     </div>
                 </div>
-            </div>    
+            </div>  
+
+            <div className='h-full block sm:hidden'>
+                <div className='bg-light-purple pb-4 pr-4'>
+                    <h3 className='p-4'>Players</h3>
+                    {players.map((player:string, idx:number) => (
+                        <h4>
+                            <div className="bg-white rounded-r-lg mt-2 p-1" key={idx}>{player} : {points[player]}</div> 
+                        </h4>
+                    ))}
+                </div>
+                <div>
+                    <div className='p-4'>
+                        {guessOrAnswer()}
+                    </div>
+                </div>
+            </div>     
         </div>
     )
 }
