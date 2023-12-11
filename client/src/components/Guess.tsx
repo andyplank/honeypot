@@ -18,13 +18,13 @@ function Guess({sendJsonMessage}: {sendJsonMessage: any}) {
 
     return (
         <div className="p-4">
-            <h4 className='pb-4'>Prompt:</h4>
+            <h4 className='pb-4 text-purple'>Prompt:</h4>
             <h3 className='pb-10'>{prompt}</h3>
             <div className='flex'>
-                <h4 className='pr-4'>Now Picking: </h4>
-                <h4 className='pb-10'>{pickingPlayer}</h4>
+                <h4 className='pr-4 text-green'>Now Picking: </h4>
+                <h4 className='pb-10 text-green'>{pickingPlayer}</h4>
             </div>
-            <h4 className='pr-4'>Answers: </h4>
+            <h4 className='pr-4 text-green'>Answers: </h4>
             <div className="container p-10 shadow-xl rounded-2xl">
                 <div className='pb-4'>
                     <h4>
