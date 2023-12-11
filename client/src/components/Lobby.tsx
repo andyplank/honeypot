@@ -1,5 +1,3 @@
-import {useState} from 'react';
-
 function Lobby({sendJsonMessage}: {sendJsonMessage: any}) {
         
     const startGame = () => {

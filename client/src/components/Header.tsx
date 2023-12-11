@@ -1,5 +1,4 @@
 import { Disclosure,  } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Logo from '../images/Logo.png'
 
 const Header = ({roomCode}: {roomCode:string}) => {

@@ -1,6 +1,7 @@
 export interface Player {
     name: string,
     id: string,
+    icon: string,
     points: number,
     answer: string
     canGuess: boolean,
@@ -11,6 +12,7 @@ export interface Room {
     hostId: string,
     players: Player[],
     currQuestion: string,
+    currPlayerId: string,
     remainingAnswers: string[],
     firstPlayerIndex: number,
     roundNumber: number,

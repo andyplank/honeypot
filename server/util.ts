@@ -50,6 +50,7 @@ function createPlayer(name: string, userId: string){
     const player: Player = {
         name: name,
         id: userId,
+        icon: "",
         points: 0,
         answer: "",
         canGuess: false,
@@ -68,6 +69,7 @@ function createRoom(data: any, userId: any) {
         players: [host],
         firstPlayerIndex: 0,
         currQuestion: "",
+        currPlayerId: host.id,
         remainingAnswers: [],
         roundNumber: -1,
         guessing: false,
@@ -77,12 +79,11 @@ function createRoom(data: any, userId: any) {
     const msg_body = {
         text: `${host.name} has created the room with code ${room.roomCode}`
     }
-    const msg = createMessage("new_room", msg_body);
-    broadcastMessage(room, msg);
+    broadcastMessage(room, "new_room", msg_body);
 }
 
 function joinRoom(data: any, userId: any) {
-    if (data.name === undefined || data.room_code === undefined) { return }
+    if (data.name === undefined || data.room_code === undefined, data.name === "") { return }
     const player = createPlayer(data.name, userId);
     const room = getRoom(data.room_code);
     if (room === null || room.roundNumber !== -1) { return }
@@ -96,8 +97,7 @@ function joinRoom(data: any, userId: any) {
     const msg_body = {
         text: `${player.name} has joined the room`
     }
-    const msg = createMessage("new_player", msg_body);
-    broadcastMessage(room, msg);
+    broadcastMessage(room, "new_player", msg_body);
 
 }
 
@@ -111,12 +111,7 @@ function startGame(data: any, userId: string) {
     for (let player of room.players) {
         player.points = 0;
     }
-    const msg_body = {
-        text: `Starting game`,
-        round: room.roundNumber
-    }
-    const msg = createMessage("start_game", msg_body);
-    broadcastMessage(room, msg);
+    broadcastMessage(room, "start_game");
     newRound(room.roomCode);
 }
 
@@ -134,14 +129,12 @@ function submitAnswer(data: any, userId: string) {
     // filter room.players to players which have an answer != ""
     const playersWithAnswers = room.players.filter((player: Player) => player.answer !== "").map((player: Player) => player.name);
     // map to only return the player name
-    
 
     const msg_body = {
         text: `${player.name} has submitted an answer`,
         submitted: playersWithAnswers
     }
-    const msg = createMessage("new_room", msg_body);
-    broadcastMessage(room, msg);
+    broadcastMessage(room, "new_answer", msg_body);
 
     if (room.remainingAnswers.length === room.players.length) {
         moveToGuess(room);
@@ -150,12 +143,7 @@ function submitAnswer(data: any, userId: string) {
 
 function moveToGuess(room: Room) {
     room.guessing = true;
-    const msg_body = {
-        text: `Moving to guess`,
-        answers: room.remainingAnswers
-    }
-    const msg = createMessage("move_to_guess", msg_body);
-    broadcastMessage(room, msg);
+    broadcastMessage(room, "move_to_guess");
     const player = room.players[room.firstPlayerIndex];
     if (player === undefined) { return }
     player.canGuess = true;
@@ -165,12 +153,11 @@ function moveToGuess(room: Room) {
 function setPlayerTurn(room: Room, player: Player) {
     if (player === undefined || !player.canGuess) { return }
 
+    room.currQuestion = player.name;
     const msg_body = {
         text: `Player ${player.name} can guess`,
-        currentPlayer: player.name
     }
-    const msg = createMessage("set_player_turn", msg_body);
-    broadcastMessage(room, msg);
+    broadcastMessage(room, "set_player_turn", msg_body);
 }
 
 
@@ -194,15 +181,12 @@ function guess(data: any, userId: string) {
     if (guessedPlayer.answer === guessedAnswer) {
         player.points += 1;
         room.remainingAnswers.splice(room.remainingAnswers.indexOf(guessedAnswer), 1);
+        room.currPlayerId = player.id;
 
         const msg_body = {
             text: `Correct guess! ${player.name} gets a point!`,
-            answers: room.remainingAnswers,
-            currentPlayer: player.name,
-            points: getPlayerPoints(room)   
         }
-        const msg = createMessage("answers", msg_body);
-        broadcastMessage(room, msg);
+        broadcastMessage(room, "answers", msg_body);
 
         if (room.remainingAnswers.length === 1) {
             player.points += 1;
@@ -244,12 +228,7 @@ function newRound (roomCode: string) {
     room.roundNumber += 1;
     if (room.roundNumber > room.players.length) {
         room.roundNumber = -1;
-        const msg_body = {
-            text: `Game over!`,
-            points: getPlayerPoints(room)
-        }
-        const msg = createMessage("end_game", msg_body);
-        broadcastMessage(room, msg);
+        broadcastMessage(room, "end_game");
         return
     }
 
@@ -257,13 +236,7 @@ function newRound (roomCode: string) {
     const question = "What is the best color?";
     room.currQuestion = question;
     
-    const msg_body = {
-        round: room.roundNumber,
-        question: question,
-        points: getPlayerPoints(room)   
-    }
-    const msg = createMessage("new_round", msg_body);
-    broadcastMessage(room, msg);
+    broadcastMessage(room, "new_round");
 }
 
 
@@ -303,33 +276,31 @@ function handleDisconnect(userId: string) {
             room.players.splice(index, 1);
         }
 
-        
-        const msg = createMessage("disconnected", msg_body);
-        broadcastMessage(room, msg);
+        broadcastMessage(room, "disconnected", msg_body);
     });    
 }
 
-function createMessage(type: string, data: any) {
-    const message:Message = {
+// Send message to all clients in a room
+function broadcastMessage(room: Room, type: string, data?: any) {
+    const roomCode = room.roomCode;
+    const message: Message = {
         type: type,
+        hostId: room.hostId,
+        room_code: roomCode,
+        round: room.roundNumber,
+        guessing: room.guessing,
+        question: room.currQuestion,
+        currentPlayer: room.currPlayerId,
+        // TODO: remove players answers from message
+        players: room.players,
+        answers: room.remainingAnswers,
         ...data
     }
-    return message;
-}
-
-// Send message to all clients in a room
-function broadcastMessage(room: Room, message:Message) {
-    const roomCode = room.roomCode;
-    message.room_code = roomCode;
-    message.round = room.roundNumber;
-    message.guessing = room.guessing;
-    message.points = getPlayerPoints(room);
-    message.players = room.players.map((player: Player) => player.name);
-    const data = JSON.stringify(message);
+    const toSend = JSON.stringify(message);
     for (let player of room.players) {
         const client = connections[player.id];
         if (client.readyState === WebSocket.OPEN) {
-            client.send(data);
+            client.send(toSend);
         }
     }
 }
