@@ -5,6 +5,7 @@ export interface Player {
     points: number,
     answer: string
     canGuess: boolean,
+    hasAnswered: boolean,
 }
 
 export interface Room {

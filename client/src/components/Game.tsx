@@ -1,34 +1,36 @@
 import Answer from "./Answer";
 import Guess from "./Guess";
 import Lobby from "./Lobby";
-
-interface Player {
-    name: string,
-    id: string,
-    icon: string,
-    points: number,
-    answer: string
-    canGuess: boolean,
-}
+import { Player } from "./Player";
 
 function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMessageJson: any}) {
 
     let round:number = -1;
     let players:Player[] = [];
     let guessing:boolean = false;
+    let hostId:string = "";
+    let playerId:string = "myId";
+    let prompt:string = "";
+    let answers:string[] = [];
+    let currentPlayerId:string = "";
     if (lastMessageJson!== null) {
         guessing = lastMessageJson.guessing ? lastMessageJson.guessing : false;
         round = lastMessageJson.round ? lastMessageJson.round : -1;
         players = lastMessageJson.players ? lastMessageJson.players : [];
+        playerId = lastMessageJson.playerId ? lastMessageJson.playerId : "myId";
+        hostId = lastMessageJson.hostId ? lastMessageJson.hostId : "";
+        prompt = lastMessageJson.question ? lastMessageJson.question : "";
+        answers = lastMessageJson.answers ? lastMessageJson.answers : [];
+        currentPlayerId = lastMessageJson.currentPlayerId ? lastMessageJson.currentPlayerId : "";
     }
 
     const guessOrAnswer = () => {
         if (guessing) {
-            return <Guess sendJsonMessage={sendJsonMessage} />
+            return <Guess sendJsonMessage={sendJsonMessage} players={players} answers={answers} playerId={playerId} currentPlayerId={currentPlayerId}/>
         } else if (round === -1) {
-            return <Lobby sendJsonMessage={sendJsonMessage} />
+            return <Lobby sendJsonMessage={sendJsonMessage} isHost={hostId===playerId}/>
         }   else {
-            return <Answer sendJsonMessage={sendJsonMessage} />
+            return <Answer sendJsonMessage={sendJsonMessage} prompt={prompt} players={players}/>
         }
     }
 
@@ -38,8 +40,8 @@ function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
                 <div className='bg-light-purple pb-4 pr-4'>
                     <h3 className='p-4'>Players</h3>
                     {players.map((player:Player) => (
-                        <h4>
-                            <div className="bg-white rounded-r-lg mt-2 p-1" key={player.id}>{player.name} : {player.points}</div> 
+                        <h4 key={player.id}>
+                            <div className="bg-white rounded-r-lg mt-2 p-1">{player.name} : {player.points}</div> 
                         </h4>
                     ))}
                 </div>
@@ -54,8 +56,8 @@ function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
                 <div className='bg-light-purple pb-4 pr-4'>
                     <h3 className='p-4'>Players</h3>
                     {players.map((player:Player) => (
-                        <h4>
-                            <div className="bg-white rounded-r-lg mt-2 p-1" key={player.id}>{player.name} : {player.points}</div> 
+                        <h4 key={player.id}>
+                            <div className="bg-white rounded-r-lg mt-2 p-1">{player.name} : {player.points}</div> 
                         </h4>
                     ))}
                 </div>

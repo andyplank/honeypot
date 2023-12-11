@@ -54,6 +54,7 @@ function createPlayer(name: string, userId: string){
         points: 0,
         answer: "",
         canGuess: false,
+        hasAnswered: false,
     }
     return player;
 }
@@ -124,6 +125,7 @@ function submitAnswer(data: any, userId: string) {
     if (player === undefined || player.answer !== "" || room.guessing || room.roundNumber === -1) { return }
 
     player.answer = answer;
+    player.hasAnswered = true;
     room.remainingAnswers.push(answer);
 
     // filter room.players to players which have an answer != ""
@@ -202,14 +204,6 @@ function guess(data: any, userId: string) {
     }
 }
 
-function getPlayerPoints(room: Room) {
-    const points:any = {};
-    for (let player of room.players) {
-        points[player.name] = player.points;
-    }
-    return points;
-}
-
 function newRound (roomCode: string) {
     const room = getRoom(roomCode);
     if (room === null) { return }
@@ -219,6 +213,7 @@ function newRound (roomCode: string) {
     // Reset player answers and canGuess to true
     for (let player of room.players) {
         player.answer = "";
+        player.hasAnswered = false;
         player.canGuess = false;
     }
 
@@ -290,16 +285,17 @@ function broadcastMessage(room: Room, type: string, data?: any) {
         round: room.roundNumber,
         guessing: room.guessing,
         question: room.currQuestion,
-        currentPlayer: room.currPlayerId,
+        currentPlayerId: room.currPlayerId,
         // TODO: remove players answers from message
         players: room.players,
         answers: room.remainingAnswers,
         ...data
     }
-    const toSend = JSON.stringify(message);
     for (let player of room.players) {
         const client = connections[player.id];
         if (client.readyState === WebSocket.OPEN) {
+            const msgAdd = {...message, ...{playerId: player.id}};
+            const toSend = JSON.stringify(msgAdd);
             client.send(toSend);
         }
     }

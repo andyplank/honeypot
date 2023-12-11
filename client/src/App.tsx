@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Game from './components/Game';
 import useWebSocket, {ReadyState} from 'react-use-websocket';
 import Join from './components/Join';
@@ -8,7 +8,8 @@ import Header from './components/Header';
 export default function App() {
 	const WS_URL = 'ws://localhost:8000';
 
-	const [messageHistory, setMessageHistory] = useState<any>([]);
+	// eslint-disable-next-line
+	// const [messageHistory, setMessageHistory] = useState<any>([]);
     const [roomCode, setRoomCode] = useState('');
     const {lastMessage, readyState, sendJsonMessage} = useWebSocket(WS_URL, {
         onOpen: () => {
@@ -25,16 +26,16 @@ export default function App() {
 	let json:any = null;
 	if (lastMessage !== null) {
 		json = JSON.parse(lastMessage.data)
-		if (roomCode === "" && json !== null && json.room_code !== undefined) {
+		if (roomCode === "" && json !== null && json.room_code !== undefined && json.room_code !== roomCode) {
 			setRoomCode(json.room_code);
 		}
 	}
 
-	useEffect(() => {
-	  if (lastMessage !== null) {
-		setMessageHistory((prev:any) => prev.concat(lastMessage));
-	  }
-	}, [lastMessage, setMessageHistory]);
+	// useEffect(() => {
+	//   if (lastMessage !== null) {
+	// 	setMessageHistory((prev:any) => prev.concat(lastMessage));
+	//   }
+	// }, [lastMessage, setMessageHistory]);
 
 
 	const view = () => {

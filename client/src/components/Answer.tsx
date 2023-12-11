@@ -1,10 +1,9 @@
 import {useState} from 'react';
+import { Player } from './Player';
 
-function Answer({sendJsonMessage}: {sendJsonMessage: any}) {
+function Answer({sendJsonMessage, prompt, players}: {sendJsonMessage: any, prompt: string, players: Player[]}) {
         
     const [answer, setAnswer] = useState('');
-
-    const prompt = "What is the best way to get to the moon?";
 
     const submitAnswer = () => {
         sendJsonMessage({
@@ -28,9 +27,19 @@ function Answer({sendJsonMessage}: {sendJsonMessage: any}) {
             </div>
             <div>
                 <h4 className='pt-20'>Waiting on...</h4>
+                {players.filter((player:Player) => player.hasAnswered === false).map((player:Player) => (
+                    <h4 key={player.id}>
+                        <div className="bg-white rounded-r-lg mt-2 p-1">{player.name}</div> 
+                    </h4>
+                ))}
             </div>
             <div>
                 <h4 className='pt-20'>Submitted!</h4>
+                {players.filter((player:Player) => player.hasAnswered === true).map((player:Player) => (
+                    <h4 key={player.id}>
+                        <div className="bg-white rounded-r-lg mt-2 p-1">{player.name}</div> 
+                    </h4>
+                ))}
             </div>
         </div>
     )

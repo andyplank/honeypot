@@ -1,12 +1,13 @@
 import {useState} from 'react';
+import { Player } from './Player';
 
-function Guess({sendJsonMessage}: {sendJsonMessage: any}) {
+function Guess({sendJsonMessage, players, answers, currentPlayerId, playerId}: {sendJsonMessage: any, players: Player[], answers: string[], currentPlayerId: string, playerId: string}) {
         
     const [guessPlayer, setGuessPlayer] = useState('');
     const [guessAnswer, setGuessAnswer] = useState('');
     
     const prompt = "What is the best way to get to the moon?";
-    const pickingPlayer = "Player 1";
+    const pickingPlayer = players.find((player:Player) => player.id === currentPlayerId)?.name;
 
     const submitGuess = () => {
         sendJsonMessage({
@@ -25,6 +26,9 @@ function Guess({sendJsonMessage}: {sendJsonMessage: any}) {
                 <h4 className='pb-10'>{pickingPlayer}</h4>
             </div>
             <h4 className='pr-4'>Answers: </h4>
+                {answers.map((answer:string, idx:number) => (
+                    <div key={idx} className='bg-white rounded-r-lg mt-2 p-1 pr-4 pl-4 mr-4'>{answer}</div> 
+                ))}
             <div className="container p-10 shadow-xl rounded-2xl">
                 <div className='pb-4'>
                     <h4>
