@@ -1,7 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
-import Lobby from './components/Lobby';
-import Answer from './components/Answer';
-import Guess from './components/Guess';
+import { useEffect, useState } from 'react';
 import Game from './components/Game';
 import useWebSocket, {ReadyState} from 'react-use-websocket';
 import Join from './components/Join';
