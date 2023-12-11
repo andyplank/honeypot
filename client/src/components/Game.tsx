@@ -2,6 +2,7 @@ import Answer from "./Answer";
 import Guess from "./Guess";
 import Lobby from "./Lobby";
 import { Player } from "./Player";
+import PlayerIcon from "./PlayerIcon";
 
 function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMessageJson: any}) {
 
@@ -33,7 +34,7 @@ function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
             return <Answer sendJsonMessage={sendJsonMessage} prompt={prompt} players={players}/>
         }
     }
-
+    
     return (
         <div className="h-full">
             <div className='grid grid-cols-4 gap-4 h-full hidden sm:grid'>
@@ -41,7 +42,8 @@ function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
                     <h3 className='p-4'>Players</h3>
                     {players.map((player:Player) => (
                         <h4 key={player.id}>
-                            <div className="bg-white rounded-r-lg mt-2 p-1">{player.name} : {player.points}</div> 
+                            <div className="bg-white rounded-r-lg mt-2 p-1">{player.name} : {player.points}</div>
+                            <PlayerIcon iconString={player.icon}/>
                         </h4>
                     ))}
                 </div>
