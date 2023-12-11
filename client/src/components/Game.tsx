@@ -24,9 +24,12 @@ function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
         currentPlayerId = lastMessageJson.currentPlayerId ? lastMessageJson.currentPlayerId : "";
     }
 
+    console.log(lastMessageJson
+    )
+
     const guessOrAnswer = () => {
         if (guessing) {
-            return <Guess sendJsonMessage={sendJsonMessage} players={players} answers={answers} playerId={playerId} currentPlayerId={currentPlayerId}/>
+            return <Guess sendJsonMessage={sendJsonMessage} players={players} answers={answers} playerId={playerId} prompt={prompt} currentPlayerId={currentPlayerId}/>
         } else if (round === -1) {
             return <Lobby sendJsonMessage={sendJsonMessage} isHost={hostId===playerId}/>
         }   else {
