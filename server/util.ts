@@ -155,7 +155,7 @@ function moveToGuess(room: Room) {
 function setPlayerTurn(room: Room, player: Player) {
     if (player === undefined || !player.canGuess) { return }
 
-    room.currQuestion = player.name;
+    room.currPlayerId = player.id;
     const msg_body = {
         text: `Player ${player.name} can guess`,
     }
