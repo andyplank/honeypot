@@ -60,6 +60,7 @@ function createPlayer(name: string, userId: string){
 }
 
 function createRoom(data: any, userId: any) {
+    if (data.name === undefined || data.name === "") { return }
     const host = createPlayer(data.name, userId);
     const code = data.room_code ? data.room_code : generateRandomString(6);
     if (getRoom(code) !== null) { return }
@@ -84,7 +85,7 @@ function createRoom(data: any, userId: any) {
 }
 
 function joinRoom(data: any, userId: any) {
-    if (data.name === undefined || data.room_code === undefined, data.name === "") { return }
+    if (data.name === undefined || data.room_code === undefined || data.name === "") { return }
     const player = createPlayer(data.name, userId);
     const room = getRoom(data.room_code);
     if (room === null || room.roundNumber !== -1) { return }
