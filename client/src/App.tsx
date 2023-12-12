@@ -7,8 +7,7 @@ import Header from './components/Header';
 import registerServiceWorker from './components/ServiceWorker';
 
 export default function App() {
-	const WS_URL = 'ws://localhost:8000';
-
+	const WS_URL = process.env.REACT_APP_API_URL;
 	useEffect(() => {
 		registerServiceWorker();
 	}, []);
