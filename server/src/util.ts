@@ -10,7 +10,8 @@ const typesDef = {
     join_room: 'join_room',
     start_game: 'start_game',
     submit_answer: 'submit_answer',
-    guess: 'guess'
+    guess: 'guess',
+    select_icon: 'select_icon',
 }
 
 // Entry point for a new player
@@ -25,6 +26,10 @@ export function newConnection(connection: any) {
 function handleMessage(message: any, userId: any) {
     const data = JSON.parse(message.toString());
     const msgType = data.type;
+    // check if data.room_code exists and is a string
+    if (data.room_code !== undefined || typeof data.room_code === "string") { 
+        data.room_code = data.room_code.toLowerCase();
+    }
     switch (msgType) {
         case typesDef.create_room:
             createRoom(data, userId);
@@ -32,6 +37,9 @@ function handleMessage(message: any, userId: any) {
             break;
         case typesDef.join_room:
             joinRoom(data, userId);
+            break;
+        case typesDef.select_icon:
+            selectIcon(data, userId);
             break;
         case typesDef.start_game:
             startGame(data, userId);
@@ -59,6 +67,19 @@ function createPlayer(name: string, userId: string, icon: string){
     return player;
 }
 
+function selectIcon(data: any, userId: any) {
+    const room = getRoom(data.room_code);
+    if (room === null) { return }
+    const player = room.players.find((player: Player) => player.id === userId);
+    if (player === undefined) { return }
+    if (data.icon === undefined) { return }
+    if (room.remainingIcons.has(data.icon) === false) { return }
+    room.remainingIcons.delete(data.icon);
+    room.remainingIcons.add(player.icon);
+    player.icon = data.icon;
+    broadcastMessage(room, "icon_selected");
+}
+
 function createRoom(data: any, userId: any) {
     if (data.name === undefined || data.name === "") { return }
     const host = createPlayer(data.name, userId, "bear");
@@ -73,7 +94,7 @@ function createRoom(data: any, userId: any) {
         currQuestion: "",
         currPlayerId: host.id,
         remainingAnswers: [],
-        remainingIcons: ["cat", "chicken", "cow", "dog", "fox", "horse", "lion", "mouse", "panda", "pig", "sheep", "snake", "tiger"],
+        remainingIcons: new Set(["cat", "chicken", "cow", "dog", "fox", "horse", "lion", "mouse", "panda", "pig", "sheep", "snake", "tiger"]),
         roundNumber: -1,
         guessing: false,
     }
@@ -95,7 +116,8 @@ function joinRoom(data: any, userId: any) {
     if (index !== -1) { return }
 
     // get the first icon from the remainingIcons array and remove it from the array
-    const icon = room.remainingIcons.shift();
+    const icon = room.remainingIcons.keys().next().value;
+    room.remainingIcons.delete(icon);
     if (icon === undefined) { return }
 
     const player = createPlayer(data.name, userId, icon);
@@ -295,9 +317,11 @@ function broadcastMessage(room: Room, type: string, data?: any) {
         // TODO: remove players answers from message
         players: room.players,
         answers: room.remainingAnswers,
-        remainingIcons: room.remainingIcons,
+        remainingIcons: [...room.remainingIcons],
         ...data
     }
+
+
     for (let player of room.players) {
         const client = connections[player.id];
         if (client.readyState === WebSocket.OPEN) {

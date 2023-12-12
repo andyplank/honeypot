@@ -8,6 +8,13 @@ function Lobby({sendJsonMessage, isHost, remainingIcons}: {sendJsonMessage: any,
         });
     };
 
+    const selectIcon = (iconName: string) => {
+        sendJsonMessage({
+            "type": "select_icon",
+            "icon": iconName,
+        });
+    };
+
     return (
         <div>
             <div className="container mx-auto p-10 shadow-xl rounded-2xl w-full">
@@ -17,7 +24,7 @@ function Lobby({sendJsonMessage, isHost, remainingIcons}: {sendJsonMessage: any,
                     {Object.keys(iconMap).map((iconName: string, idx:number) => {
                         if (remainingIcons.includes(iconName)) {
                             return (
-                                <div key={iconName+idx} className='hover:scale-110 duration-500'> 
+                                <div key={iconName+idx} className='hover:scale-110 duration-500' onClick={() => selectIcon(iconName)}> 
                                     <PlayerIcon iconName={iconName}/>
                                 </div>
                             ) 
