@@ -36,7 +36,7 @@ function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
     }
     
     return (
-        <div className="h-full">
+        <div className="h-[calc(100vh-150px)]">
             <div className='grid grid-cols-4 gap-4 h-full hidden sm:grid'>
                 <div className='bg-light-purple pb-4 pr-4'>
                     <h3 className='p-4'>Players</h3>
