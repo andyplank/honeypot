@@ -46,11 +46,11 @@ function handleMessage(message: any, userId: any) {
     }
 }
 
-function createPlayer(name: string, userId: string){
+function createPlayer(name: string, userId: string, icon: string){
     const player: Player = {
         name: name,
         id: userId,
-        icon: "",
+        icon: icon,
         points: 0,
         answer: "",
         canGuess: false,
@@ -61,7 +61,7 @@ function createPlayer(name: string, userId: string){
 
 function createRoom(data: any, userId: any) {
     if (data.name === undefined || data.name === "") { return }
-    const host = createPlayer(data.name, userId);
+    const host = createPlayer(data.name, userId, "bear");
     const code = data.room_code ? data.room_code : generateRandomString(6);
     if (getRoom(code) !== null) { return }
 
@@ -73,6 +73,7 @@ function createRoom(data: any, userId: any) {
         currQuestion: "",
         currPlayerId: host.id,
         remainingAnswers: [],
+        remainingIcons: ["cat", "chicken", "cow", "dog", "fox", "horse", "lion", "mouse", "panda", "pig", "sheep", "snake", "tiger"],
         roundNumber: -1,
         guessing: false,
     }
@@ -86,7 +87,6 @@ function createRoom(data: any, userId: any) {
 
 function joinRoom(data: any, userId: any) {
     if (data.name === undefined || data.room_code === undefined || data.name === "") { return }
-    const player = createPlayer(data.name, userId);
     const room = getRoom(data.room_code);
     if (room === null || room.roundNumber !== -1) { return }
 
@@ -94,6 +94,11 @@ function joinRoom(data: any, userId: any) {
     const index = room.players.findIndex((player: Player) => player.id === userId);
     if (index !== -1) { return }
 
+    // get the first icon from the remainingIcons array and remove it from the array
+    const icon = room.remainingIcons.shift();
+    if (icon === undefined) { return }
+
+    const player = createPlayer(data.name, userId, icon);
     room.players.push(player);
 
     const msg_body = {
@@ -290,6 +295,7 @@ function broadcastMessage(room: Room, type: string, data?: any) {
         // TODO: remove players answers from message
         players: room.players,
         answers: room.remainingAnswers,
+        remainingIcons: room.remainingIcons,
         ...data
     }
     for (let player of room.players) {

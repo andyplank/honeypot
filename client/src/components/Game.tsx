@@ -14,6 +14,7 @@ function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
     let prompt:string = "";
     let answers:string[] = [];
     let currentPlayerId:string = "";
+    let remainingIcons:string[] = [];
     if (lastMessageJson!== null) {
         guessing = lastMessageJson.guessing ? lastMessageJson.guessing : false;
         round = lastMessageJson.round ? lastMessageJson.round : -1;
@@ -23,13 +24,14 @@ function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
         prompt = lastMessageJson.question ? lastMessageJson.question : "";
         answers = lastMessageJson.answers ? lastMessageJson.answers : [];
         currentPlayerId = lastMessageJson.currentPlayerId ? lastMessageJson.currentPlayerId : "";
+        remainingIcons = lastMessageJson.remainingIcons ? lastMessageJson.remainingIcons : [];
     }
 
     const guessOrAnswer = () => {
         if (guessing) {
             return <Guess sendJsonMessage={sendJsonMessage} players={players} answers={answers} playerId={playerId} prompt={prompt} currentPlayerId={currentPlayerId}/>
         } else if (round === -1) {
-            return <Lobby sendJsonMessage={sendJsonMessage} isHost={hostId===playerId}/>
+            return <Lobby sendJsonMessage={sendJsonMessage} isHost={hostId===playerId} remainingIcons={remainingIcons}/>
         }   else {
             return <Answer sendJsonMessage={sendJsonMessage} prompt={prompt} players={players}/>
         }

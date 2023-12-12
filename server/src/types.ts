@@ -15,6 +15,7 @@ export interface Room {
     currQuestion: string,
     currPlayerId: string,
     remainingAnswers: string[],
+    remainingIcons: string[],
     firstPlayerIndex: number,
     roundNumber: number,
     guessing: boolean,

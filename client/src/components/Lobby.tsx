@@ -1,6 +1,6 @@
 import  PlayerIcon, { iconMap } from "./PlayerIcon";
 
-function Lobby({sendJsonMessage, isHost}: {sendJsonMessage: any, isHost: boolean}) {
+function Lobby({sendJsonMessage, isHost, remainingIcons}: {sendJsonMessage: any, isHost: boolean, remainingIcons: string[]}) {
     
     const startGame = () => {
         sendJsonMessage({
@@ -15,9 +15,18 @@ function Lobby({sendJsonMessage, isHost}: {sendJsonMessage: any, isHost: boolean
                     <h3 className='pb-10'>Select your icon:</h3>
                     <div className='grid grid-cols-4 gap-2 md:grid-cols-7'>
                     {Object.keys(iconMap).map((iconName: string, idx:number) => {
-                        return  <div key={iconName+idx}className='hover:scale-110 duration-500'> 
+                        if (remainingIcons.includes(iconName)) {
+                            return (
+                                <div key={iconName+idx} className='hover:scale-110 duration-500'> 
                                     <PlayerIcon iconName={iconName}/>
                                 </div>
+                            ) 
+                        } else {
+                        return  (
+                            <div key={iconName+idx} className='filter grayscale'> 
+                                <PlayerIcon iconName={iconName}/>
+                            </div>
+                        )}
                     })}
                     </div>
                 </div>
