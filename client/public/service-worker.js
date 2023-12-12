@@ -1,4 +1,4 @@
-self.addEventListener('install', (event) => {
+self.addEventListener('load', (event) => {
     event.waitUntil(
         caches.open('svg-icon-cache').then((cache) => {
             return cache.addAll([
