@@ -13,7 +13,7 @@ function Lobby({sendJsonMessage, isHost}: {sendJsonMessage: any, isHost: boolean
             <div className="container mx-auto p-10 shadow-xl rounded-2xl w-full">
                 <div className='pb-2'>
                     <h3 className='pb-10'>Select your icon:</h3>
-                    <div className='grid grid-cols-4 gap-2 md:grid-cols-7'>
+                    <div className='grid grid-cols-3 gap-2 md:grid-cols-7'>
                     {Object.keys(iconMap).map((iconName: string, idx:number) => {
                         return  <div key={iconName+idx}className='hover:scale-110 duration-500'> 
                                     <PlayerIcon iconName={iconName}/>
