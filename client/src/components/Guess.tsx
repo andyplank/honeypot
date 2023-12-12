@@ -7,6 +7,9 @@ const Guess = ({sendJsonMessage, players, answers, currentPlayerId, playerId, pr
     const [guessAnswer, setGuessAnswer] = useState('');
     
     const pickingPlayer = players.find((player:Player) => player.id === currentPlayerId)?.name;
+    if (playerId === currentPlayerId) {
+        console.log('current player is picking');
+    }
 
     const submitGuess = () => {
         sendJsonMessage({

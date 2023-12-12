@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Game from './components/Game';
-import useWebSocket, {ReadyState} from 'react-use-websocket';
+import useWebSocket from 'react-use-websocket';
 import Join from './components/Join';
 import './App.css'
 import Header from './components/Header';
