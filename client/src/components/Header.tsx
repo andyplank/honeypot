@@ -1,8 +1,7 @@
 import Logo from '../images/Logo.png'
 
 const Header = ({roomCode}: {roomCode:string}) => {
-
-const roomCodeUpper = roomCode.toUpperCase();
+  const roomCodeUpper = roomCode.toUpperCase();
 
   return (
     <>

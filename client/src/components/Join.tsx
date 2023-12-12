@@ -1,6 +1,6 @@
 import {useState} from 'react';
 
-function Join({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, roomCode: any, setRoomCode: any}) {
+const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, roomCode: any, setRoomCode: any}) => {
         
     const [username, setUsername] = useState('');
 

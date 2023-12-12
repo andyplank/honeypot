@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import { Player } from './Player';
 
-function Answer({sendJsonMessage, prompt, players}: {sendJsonMessage: any, prompt: string, players: Player[]}) {
+const Answer = ({sendJsonMessage, prompt, players}: {sendJsonMessage: any, prompt: string, players: Player[]}) => {
         
     const [answer, setAnswer] = useState('');
 

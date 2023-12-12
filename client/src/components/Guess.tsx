@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import { Player } from './Player';
 
-function Guess({sendJsonMessage, players, answers, currentPlayerId, playerId, prompt}: {sendJsonMessage: any, players: Player[], answers: string[], currentPlayerId: string, playerId: string, prompt: string}) {
+const Guess = ({sendJsonMessage, players, answers, currentPlayerId, playerId, prompt}: {sendJsonMessage: any, players: Player[], answers: string[], currentPlayerId: string, playerId: string, prompt: string}) => {
     
     const [guessPlayer, setGuessPlayer] = useState('');
     const [guessAnswer, setGuessAnswer] = useState('');

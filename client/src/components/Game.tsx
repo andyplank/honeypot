@@ -4,7 +4,7 @@ import Lobby from "./Lobby";
 import { Player } from "./Player";
 import PlayerIcon from "./PlayerIcon";
 
-function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMessageJson: any}) {
+const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMessageJson: any}) => {
 
     let round:number = -1;
     let players:Player[] = [];

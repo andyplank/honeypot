@@ -1,6 +1,3 @@
-import {useState} from 'react';
-import { Player } from './Player';
-
 export const iconMap:any = {
     bear: "bear.svg",
     chicken: "chicken.svg",
@@ -18,7 +15,7 @@ export const iconMap:any = {
     cow: "cow.svg"
 }
 
-function PlayerIcon({iconName}: {iconName: string}) {
+const PlayerIcon = ({iconName}: {iconName: string}) => {
     if (!iconMap[iconName]) {
         return <></>
     }
