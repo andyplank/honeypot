@@ -1,12 +1,9 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - things-strings
+name: Azure Deploy Server
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -23,13 +20,12 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          cd client
-          npm i
+          cd server
+          npm ci
           npm run build
-          cd ..
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./client/build/* -r
+        run: zip release.zip ./server/build/* -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3

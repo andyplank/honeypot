@@ -4,8 +4,7 @@
     "description": "",
     "main": "server.ts",
     "scripts": {
-        "dev": "npx ts-node server.ts",
-        "start": "node build/server.js",
+        "start": "npx ts-node ./src/server.ts",
         "build": "npx tsc"
     },
     "author": "Andy Plank",
