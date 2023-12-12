@@ -1,12 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Game from './components/Game';
 import useWebSocket, {ReadyState} from 'react-use-websocket';
 import Join from './components/Join';
 import './App.css'
 import Header from './components/Header';
+import registerServiceWorker from './components/ServiceWorker';
 
 export default function App() {
 	const WS_URL = 'ws://localhost:8000';
+
+	useEffect(() => {
+		registerServiceWorker();
+	}, []);
 
 	// eslint-disable-next-line
 	// const [messageHistory, setMessageHistory] = useState<any>([]);
