@@ -10,7 +10,6 @@ self.addEventListener('install', (event) => {
                 './icons/fox.svg',
                 './icons/horse.svg',
                 './icons/lion.svg',
-                './icons/monkey.svg',
                 './icons/mouse.svg',
                 './icons/panda.svg',
                 './icons/pig.svg',

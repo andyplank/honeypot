@@ -8,7 +8,6 @@ export const iconMap:any = {
     dog: "dog.svg",
     fox: "fox.svg",
     lion: "lion.svg",
-    monkey: "monkey.svg",
     mouse: "mouse.svg",
     panda: "panda.svg",
     snake: "snake.svg",
@@ -16,6 +15,7 @@ export const iconMap:any = {
     horse: "horse.svg",
     pig: "pig.svg",
     sheep: "sheep.svg",
+    cow: "cow.svg"
 }
 
 function PlayerIcon({iconName}: {iconName: string}) {
@@ -27,7 +27,7 @@ function PlayerIcon({iconName}: {iconName: string}) {
 
     return (
         <div className="p-2 lg:p-4">
-            <img src={`./icons/${icon}`} alt={iconName} />
+            <img src={`./icons/${icon}`} alt={iconName}/>
         </div>
     )
 }
