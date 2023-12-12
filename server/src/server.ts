@@ -12,12 +12,12 @@ const server = http.createServer(app);
 const wsServer = new WebSocketServer({ server });
 
 // Serve the React app
-app.use(express.static(path.join(__dirname, '../client/build')));
+// app.use(express.static(path.join(__dirname, './client/build')));
 
-// Handle all other routes
-app.get('*', (req, res) => {
-	res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-});
+// // Handle all other routes
+// app.get('*', (req, res) => {
+// 	res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+// });
 
 // app.use(express.static(path.join(__dirname, "./client/build", "index.html")));
 // app.use(express.static("public"));
