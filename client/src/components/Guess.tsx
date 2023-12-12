@@ -17,7 +17,7 @@ function Guess({sendJsonMessage, players, answers, currentPlayerId, playerId, pr
     }
 
     return (
-        <div className="p-4">
+        <div className="container p-4">
             <h4 className='pb-4 text-purple'>Prompt:</h4>
             <h3 className='pb-10'>{prompt}</h3>
             <div className='flex'>
@@ -26,7 +26,7 @@ function Guess({sendJsonMessage, players, answers, currentPlayerId, playerId, pr
             </div>
             <h4 className='pr-4 text-green'>Answers: </h4>
                 {answers.map((answer:string, idx:number) => (
-                    <div key={idx} className='bg-white rounded-r-lg mt-2 p-1 pr-4 pl-4 mr-4'>{answer}</div> 
+                    <div key={idx} className='bg-white shadow-xl rounded-2xl mt-2 p-1 pr-4 pl-4 mr-4'>{answer}</div> 
                 ))}
             <div className="container p-10 shadow-xl rounded-2xl">
                 <div className='pb-4'>

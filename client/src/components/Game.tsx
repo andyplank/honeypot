@@ -43,7 +43,7 @@ function Game({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
                     {players.map((player:Player) => (
                         <h4 key={player.id}>
                             <div className="bg-white rounded-r-lg mt-2 p-1">{player.name} : {player.points}</div>
-                            <PlayerIcon iconString={player.icon}/>
+                            <PlayerIcon iconName={player.icon}/>
                         </h4>
                     ))}
                 </div>

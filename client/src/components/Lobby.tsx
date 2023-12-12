@@ -1,5 +1,7 @@
+import  PlayerIcon, { iconMap } from "./PlayerIcon";
+
 function Lobby({sendJsonMessage, isHost}: {sendJsonMessage: any, isHost: boolean}) {
-        
+    
     const startGame = () => {
         sendJsonMessage({
             "type": "start_game",
@@ -7,10 +9,17 @@ function Lobby({sendJsonMessage, isHost}: {sendJsonMessage: any, isHost: boolean
     };
 
     return (
-        <div >
-            <div className="container p-10 shadow-xl rounded-2xl">
-                <div className='pb-4'>
-                    <h3 className='pb-20'>Select your icon:</h3>
+        <div>
+            <div className="container mx-auto p-10 shadow-xl rounded-2xl w-full">
+                <div className='pb-2'>
+                    <h3 className='pb-10'>Select your icon:</h3>
+                    <div className='grid grid-cols-4 gap-2 md:grid-cols-7'>
+                    {Object.keys(iconMap).map((iconName: string) => {
+                        return  <div className='hover:scale-110 duration-500'> 
+                                    <PlayerIcon iconName={iconName}/>
+                                </div>
+                    })}
+                    </div>
                 </div>
             </div>
             {isHost && 
@@ -19,10 +28,11 @@ function Lobby({sendJsonMessage, isHost}: {sendJsonMessage: any, isHost: boolean
             </div>
             }
 
-            {/* OR if user isn't host, show this: */}
+            {!isHost &&
             <div className='text-center pt-20'>
-                <h4>Waiting for host to start game...</h4>
+                <h4>Waiting for host to start the game...</h4>
             </div>
+            }           
         </div>
     )
 }
