@@ -61,14 +61,14 @@ export default function App() {
 			</div> */}
 
 
-			<div className='bg-black pt-10'>
+			{/* <div className='bg-black pt-10'>
 				<h4>Debugging</h4>
 				<div>
 				<p>WebSocket Status: {ReadyState[readyState]}</p>
-				{/* <p>Last Message: {lastMessage && lastMessage.data}</p>
-				{roomCode && <p>Room Code: {roomCode}</p>} */}
-			</div>
-			</div>
+				<p>Last Message: {lastMessage && lastMessage.data}</p>
+				{roomCode && <p>Room Code: {roomCode}</p>}
+			</div> 
+			</div>*/}
 		</div>
   	);
 }

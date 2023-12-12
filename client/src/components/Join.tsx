@@ -19,8 +19,8 @@ function Join({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
     };
 
     return (
-        <div className='flex bg-light-purple h-full'>
-            <div className='bg-white drop-shadow-lg shadow-sm p-10 text-center m-auto min-w-4xl rounded-2xl'>
+        <div className='flex bg-light-purple h-[calc(100vh-150px)] overflow-hidden'>
+            <div className='bg-white drop-shadow-lg shadow-sm p-5 md:p-10 text-center m-auto min-w-4xl rounded-2xl'>
                 <div className='pb-6'>
                     <h2>Hello!</h2>
                     <h3>Let's get started</h3>
