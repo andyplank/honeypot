@@ -13,10 +13,9 @@ export default function App() {
 		registerServiceWorker();
 	}, []);
 
-	// eslint-disable-next-line
 	// const [messageHistory, setMessageHistory] = useState<any>([]);
     const [roomCode, setRoomCode] = useState('');
-    const {lastMessage, readyState, sendJsonMessage} = useWebSocket(WS_URL, {
+    const {lastMessage, sendJsonMessage} = useWebSocket(WS_URL, {
         onOpen: () => {
             console.log('WebSocket connection established.');
         }
