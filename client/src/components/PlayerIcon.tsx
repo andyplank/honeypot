@@ -15,7 +15,7 @@ export const iconMap:any = {
     cow: "cow.svg"
 }
 
-const PlayerIcon = ({iconName}: {iconName: string}) => {
+const PlayerIcon = ({iconName, customClass}: {iconName: string, customClass?: string}) => {
     if (!iconMap[iconName]) {
         return <></>
     }
@@ -23,9 +23,7 @@ const PlayerIcon = ({iconName}: {iconName: string}) => {
     const icon = iconMap[iconName];
 
     return (
-        <div className="p-2 lg:p-4">
-            <img src={`./icons/${icon}`} alt={iconName}/>
-        </div>
+        <img src={`./icons/${icon}`} alt={iconName} className={customClass}/>
     )
 }
 

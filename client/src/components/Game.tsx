@@ -43,10 +43,14 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
                 <div className='bg-light-purple pb-4 pr-4'>
                     <h3 className='p-4'>Players</h3>
                     {players.map((player:Player) => (
-                        <h4 key={player.id}>
-                            <div className="bg-white rounded-r-lg mt-2 p-1">{player.name} : {player.points}</div>
-                            <PlayerIcon iconName={player.icon}/>
-                        </h4>
+                        <div className="flex bg-white rounded-r-lg mt-2 p-1 h-12 justify-between items-center">
+                            <h4 key={player.id}>
+                                {player.name} : {player.points}    
+                            </h4>
+                            <div className="test">
+                                <PlayerIcon iconName={player.icon} customClass="h-12"/>
+                            </div>
+                        </div>
                     ))}
                 </div>
                 <div className='col-span-3'>
