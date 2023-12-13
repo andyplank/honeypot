@@ -174,8 +174,8 @@ function submitAnswer(data: any, userId: string) {
 function moveToGuess(room: Room) {
     room.guessing = true;
     broadcastMessage(room, "move_to_guess");
+    if (room.firstPlayerIndex < 0 || room.firstPlayerIndex > room.players.length) { room.firstPlayerIndex = 0 }
     const player = room.players[room.firstPlayerIndex];
-    if (player === undefined) { return }
     player.canGuess = true;
     setPlayerTurn(room, player);
 }
@@ -190,46 +190,67 @@ function setPlayerTurn(room: Room, player: Player) {
     broadcastMessage(room, "set_player_turn", msg_body);
 }
 
+const verifyGuess = (room: Room, currUserId: string, guessedPlayerName:string, guessedAnswer: string) => {
+    if (room.remainingAnswers.includes(guessedAnswer) === false) { return false }
+
+    const guessedPlayer = getPlayer(room, guessedPlayerName);
+    if (guessedPlayer === undefined || guessedPlayer.id === currUserId) { return false }
+
+    if (guessedPlayer.answer === guessedAnswer) {
+        room.remainingAnswers.splice(room.remainingAnswers.indexOf(guessedAnswer), 1);
+        return true;
+    }
+
+    return false;
+}
 
 function guess(data: any, userId: string) {
     const guessedPlayerName = data.guessed_player;
     const guessedAnswer = data.guessed_answer;
+    const pairs: [string, string][] = data.pairs;
 
     const room = getRoom(data.room_code);
     if (room === null || room.roundNumber === -1 || !room.guessing) { return }
 
+    const player = getPlayer(room, userId);
+    if (player === undefined || !player.canGuess) { return }
+    const playerInd = room.players.findIndex((player: Player) => player.id === userId);
+
     // Check if guessedAnswer is in remainingAnswers
     if (room.remainingAnswers.includes(guessedAnswer) === false) { return }
+    let correctAnswers = 0;
+    for (let pair of pairs) {
+        const answer = pair[1];
+        const name = pair[0];
+        if (verifyGuess(room, userId, name, answer)) {
+            correctAnswers += 1;
+        }
+    }
 
-    const playerInd = room.players.findIndex((player: Player) => player.id === userId);
-    const player = room.players[playerInd];
-    if (player === undefined || !player.canGuess || guessedPlayerName === player.name) { return }
-
-    const guessedPlayer = room.players.find((player: Player) => player.name === guessedPlayerName);
-    if (guessedPlayer === undefined) { return }
-
-    if (guessedPlayer.answer === guessedAnswer) {
-        player.points += 1;
-        room.remainingAnswers.splice(room.remainingAnswers.indexOf(guessedAnswer), 1);
-        room.currPlayerId = player.id;
-
+    if (correctAnswers === pairs.length) {
+        player.points += correctAnswers;
         const msg_body = {
-            text: `Correct guess! ${player.name} gets a point!`,
+            text: `Correct guess! ${player.name} gets ${correctAnswers} points!`,
         }
         broadcastMessage(room, "answers", msg_body);
-
-        if (room.remainingAnswers.length === 1) {
-            player.points += 1;
-            newRound(room.roomCode);
-        }
     } else {
-        player.canGuess = false;
-        const nextPlayerInd = (playerInd + 1)%room.players.length;
-        const nextPlayer = room.players[nextPlayerInd];
-        if (nextPlayer === undefined) { return }
-        nextPlayer.canGuess = true;
-        setPlayerTurn(room, nextPlayer);
+        const msg_body = {
+            text: `Incorrect guess! ${player.name} had ${correctAnswers} of ${pairs.length} correct!`,
+        }
+        broadcastMessage(room, "answers", msg_body);
     }
+
+    if (room.remainingAnswers.length === 1) {
+        player.points += 1;
+        newRound(room.roomCode);
+    }
+
+    player.canGuess = false;
+    const nextPlayerInd = (playerInd + 1)%room.players.length;
+    const nextPlayer = room.players[nextPlayerInd];
+    if (nextPlayer === undefined) { return }
+    nextPlayer.canGuess = true;
+    setPlayerTurn(room, nextPlayer);
 }
 
 function newRound (roomCode: string) {
@@ -278,6 +299,10 @@ function getRoom(code: string): Room | null{
         return null;
     }
     return rooms[code];
+}
+
+const getPlayer = (room: Room, userId: string) => {
+    return room.players.find((player: Player) => player.id === userId);
 }
 
 function handleDisconnect(userId: string) {

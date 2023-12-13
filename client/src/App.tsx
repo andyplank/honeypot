@@ -7,12 +7,11 @@ import Header from './components/Header';
 import registerServiceWorker from './components/ServiceWorker';
 
 export default function App() {
-	const WS_URL = process.env.REACT_APP_API_URL;
+	const WS_URL = process.env.REACT_APP_API_URL || 'ws://localhost:8000';
 	useEffect(() => {
 		registerServiceWorker();
 	}, []);
 
-	// const [messageHistory, setMessageHistory] = useState<any>([]);
     const [roomCode, setRoomCode] = useState('');
     const {lastMessage, sendJsonMessage} = useWebSocket(WS_URL, {
         onOpen: () => {
