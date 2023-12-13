@@ -28,9 +28,11 @@ const Guess = ({sendJsonMessage, players, answers, currentPlayerId, playerId, pr
                 <h4 className='pb-10 text-green'>{pickingPlayer}</h4>
             </div>
             <h4 className='pr-4 text-green'>Answers: </h4>
+            <div className='grid grid-cols-3 gap-2 mt-auto'>
                 {answers.map((answer:string, idx:number) => (
-                    <div key={idx} className='bg-white shadow-xl rounded-2xl mt-2 p-1 pr-4 pl-4 mr-4'>{answer}</div> 
+                    <div key={idx} className='bg-white outline outline-1 rounded-2xl mt-2 p-1 pr-4 pl-4 mr-4'>{answer}</div> 
                 ))}
+            </div>
             <div className="container p-10 shadow-xl rounded-2xl">
                 <div className='pb-4'>
                     <h4>
