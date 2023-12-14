@@ -23,14 +23,14 @@ jobs:
           cd server
           npm ci
           npm run build
-          mkdir ./build/public
 
       - name: build client
         run : |
           cd client
           npm ci
           npm run build
-          mv build/* ../server/public
+          mkdir ../server/build/public
+          mv build/* ../server/build/public
 
       - name: Zip artifact for deployment
         run: zip release.zip ./server/build/* -r
