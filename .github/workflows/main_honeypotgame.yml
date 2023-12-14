@@ -32,9 +32,9 @@ jobs:
           
       - name: prep archive
         run : |
-          mkdir /server/public
-          mv /server/node_modules /server
-          mv /client/build/* /server/build/public
+          mkdir ./server/build/public
+          mv ./server/node_modules ./server/build
+          mv ./client/build/* ./server/build/public
 
         
       - name: Zip artifact for deployment
