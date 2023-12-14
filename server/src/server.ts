@@ -15,14 +15,19 @@ const wsServer = new WebSocketServer({ server });
 // app.use(express.static(path.join(__dirname, './client/build')));
 
 // // Handle all other routes
+// app.get('/', (req, res) => {
+// 	res.send('Hello World!');
+// });
+
+// app.use(express.static(path.join(__dirname, "./build/build", "index.html")));
+app.use(express.static(path.join(__dirname, "./public")));
+// app.use(express.static("./build/build"));
+
 app.get('/', (req, res) => {
-	res.send('Hello World!');
+	res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
-// app.use(express.static(path.join(__dirname, "./client/build", "index.html")));
-// app.use(express.static("public"));
-
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 80;
 server.listen(port, () => {
 	console.log(`WebSocket server is running on port ${port}`);
 });
