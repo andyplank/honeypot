@@ -40,6 +40,13 @@ jobs:
       - name: Zip artifact for deployment
         run: zip release.zip ./server/build/* -r
 
+      - name: Upload Release
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          artifacts: "release.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
