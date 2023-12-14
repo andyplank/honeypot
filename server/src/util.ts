@@ -17,19 +17,25 @@ const typesDef = {
 // Entry point for a new player
 export function newConnection(connection: any) {
     const userId = uuidv4();
-    console.log('Recieved a new connection');
+    console.log(`Recieved a new connection ${userId}`);
     connections[userId] = connection;
     connection.on('message', (message: any) => handleMessage(message, userId));
     connection.on('close', () => handleDisconnect(userId));
 }
 
 function handleMessage(message: any, userId: any) {
-    const data = JSON.parse(message.toString());
-    const msgType = data.type;
-    // check if data.room_code exists and is a string
-    if (data.room_code !== undefined || typeof data.room_code === "string") { 
+    let data;
+    try {
+        data = JSON.parse(message.toString());
+    } catch (error) {
+        return;
+    }
+
+    if (data.room_code !== undefined && typeof data.room_code === "string") { 
         data.room_code = data.room_code.toLowerCase();
     }
+
+    const msgType = data.type;
     switch (msgType) {
         case typesDef.create_room:
             createRoom(data, userId);
@@ -216,7 +222,6 @@ function guess(data: any, userId: string) {
     if (player === undefined || !player.canGuess) { return }
     const playerInd = room.players.findIndex((player: Player) => player.id === userId);
 
-    // Check if guessedAnswer is in remainingAnswers
     if (room.remainingAnswers.includes(guessedAnswer) === false) { return }
     let correctAnswers = 0;
     for (let pair of pairs) {
@@ -279,7 +284,7 @@ function newRound (roomCode: string) {
     // TODO: Get questions from file
     const question = "What is the best color?";
     room.currQuestion = question;
-    
+
     broadcastMessage(room, "new_round");
 }
 
@@ -305,6 +310,7 @@ const getPlayer = (room: Room, userId: string) => {
     return room.players.find((player: Player) => player.id === userId);
 }
 
+// TODO: remove player answers and icons from room
 function handleDisconnect(userId: string) {
     delete connections[userId];
     // loop over all the rooms and find any rooms with playerId = userId

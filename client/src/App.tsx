@@ -7,10 +7,12 @@ import Header from './components/Header';
 import registerServiceWorker from './components/ServiceWorker';
 
 export default function App() {
-	const WS_URL = process.env.REACT_APP_API_URL || 'ws://localhost:8000';
+	const WS_URL = process.env.REACT_APP_API_URL || 'ws://localhost:80';
 	useEffect(() => {
+		console.log("app mount");
 		registerServiceWorker();
 	}, []);
+	console.log("app render");
 
     const [roomCode, setRoomCode] = useState('');
     const {lastMessage, sendJsonMessage} = useWebSocket(WS_URL, {
@@ -20,8 +22,14 @@ export default function App() {
     });
 
 	const sendJsonToServer = (json:any) => {
-		const copy = JSON.parse(JSON.stringify(json));
-		copy.room_code = roomCode;
+		let copy:any = {};
+		try{
+			copy = JSON.parse(JSON.stringify(json));
+			copy.room_code = roomCode;
+		} catch (e) {
+			console.log(e);
+			return;
+		}
 		sendJsonMessage(copy);
 	}
 
@@ -32,13 +40,6 @@ export default function App() {
 			setRoomCode(json.room_code);
 		}
 	}
-
-	// useEffect(() => {
-	//   if (lastMessage !== null) {
-	// 	setMessageHistory((prev:any) => prev.concat(lastMessage));
-	//   }
-	// }, [lastMessage, setMessageHistory]);
-
 
 	const view = () => {
 		if (json === null || json.round === undefined) {
@@ -52,25 +53,7 @@ export default function App() {
 	return (
 		<div className="App h-screen">
 			<Header roomCode={roomCode} />
-
 			{view()}
-
-			{/* <div>
-				<h3>Message History</h3>
-				{messageHistory.map((message:any, idx:number) => (
-					<div key={idx}>{message.data}</div>
-				))}
-			</div> */}
-
-
-			{/* <div className='bg-black pt-10'>
-				<h4>Debugging</h4>
-				<div>
-				<p>WebSocket Status: {ReadyState[readyState]}</p>
-				<p>Last Message: {lastMessage && lastMessage.data}</p>
-				{roomCode && <p>Room Code: {roomCode}</p>}
-			</div> 
-			</div>*/}
 		</div>
   	);
 }
