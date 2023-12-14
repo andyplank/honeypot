@@ -23,6 +23,7 @@ jobs:
           cd server
           npm ci
           npm run build
+          mkdir ./build/public
 
       - name: build client
         run : |
