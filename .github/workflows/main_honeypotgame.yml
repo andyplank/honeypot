@@ -29,9 +29,14 @@ jobs:
           cd client
           npm ci
           npm run build
-          mkdir ../server/build/public
-          mv build/* ../server/build/public
+          
+      - name: prep archive
+        run : |
+          mkdir /server/public
+          mv /server/node_modules /server
+          mv /client/build/* /server/build/public
 
+        
       - name: Zip artifact for deployment
         run: zip release.zip ./server/build/* -r
 
