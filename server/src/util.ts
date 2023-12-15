@@ -199,7 +199,7 @@ function setPlayerTurn(room: Room, player: Player) {
 const verifyGuess = (room: Room, currUserId: string, guessedPlayerName:string, guessedAnswer: string) => {
     if (room.remainingAnswers.includes(guessedAnswer) === false) { return false }
 
-    const guessedPlayer = getPlayer(room, guessedPlayerName);
+    const guessedPlayer = room.players.find((player: Player) => player.name === guessedPlayerName);
     if (guessedPlayer === undefined || guessedPlayer.id === currUserId) { return false }
 
     if (guessedPlayer.answer === guessedAnswer) {
@@ -211,8 +211,6 @@ const verifyGuess = (room: Room, currUserId: string, guessedPlayerName:string, g
 }
 
 function guess(data: any, userId: string) {
-    const guessedPlayerName = data.guessed_player;
-    const guessedAnswer = data.guessed_answer;
     const pairs: [string, string][] = data.pairs;
 
     const room = getRoom(data.room_code);
@@ -222,7 +220,6 @@ function guess(data: any, userId: string) {
     if (player === undefined || !player.canGuess) { return }
     const playerInd = room.players.findIndex((player: Player) => player.id === userId);
 
-    if (room.remainingAnswers.includes(guessedAnswer) === false) { return }
     let correctAnswers = 0;
     for (let pair of pairs) {
         const answer = pair[1];

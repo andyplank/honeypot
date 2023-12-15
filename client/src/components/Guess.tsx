@@ -7,15 +7,12 @@ const Guess = ({sendJsonMessage, players, answers, currentPlayerId, playerId, pr
     const [guessAnswer, setGuessAnswer] = useState('');
     
     const pickingPlayer = players.find((player:Player) => player.id === currentPlayerId)?.name;
-    if (playerId === currentPlayerId) {
-        console.log('current player is picking');
-    }
+    const isPicking = playerId === currentPlayerId;
 
     const submitGuess = () => {
         sendJsonMessage({
             "type": "guess",
-            "guessed_player": guessPlayer,
-            "guessed_answer": guessAnswer,
+            "pairs": [[guessPlayer, guessAnswer]],
         });
     }
 
@@ -33,7 +30,9 @@ const Guess = ({sendJsonMessage, players, answers, currentPlayerId, playerId, pr
                     <div key={idx} className='bg-white outline outline-1 rounded-2xl mt-2 p-1 pr-4 pl-4 mr-4'>{answer}</div> 
                 ))}
             </div>
-            <div className="container p-10 shadow-xl rounded-2xl">
+            {   
+                isPicking &&
+                <div className="container p-10 shadow-xl rounded-2xl">
                 <div className='pb-4'>
                     <h4>
                         <input name="guessAnswer" value={guessAnswer} onChange={(e) => setGuessAnswer(e.target.value)} type="text" className="orange-input pt-5" placeholder="Guess" aria-label="Guess" aria-describedby="basic-addon1" />
@@ -46,6 +45,7 @@ const Guess = ({sendJsonMessage, players, answers, currentPlayerId, playerId, pr
                     <button className='button-orange p-1 pr-4 pl-4' onClick={submitGuess}><h4>Submit Guess</h4></button>
                 </div>
             </div>
+            }
         </div>
     )
 }
