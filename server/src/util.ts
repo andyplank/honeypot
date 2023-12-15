@@ -1,6 +1,10 @@
 import { Room, Player, Message } from './types';
 import { WebSocket } from 'ws';
 import { v4 as uuidv4 } from 'uuid';
+import * as fs from 'fs';
+
+const fileContent = fs.readFileSync('./src/prompts.txt').toString();
+const prompts = fileContent.split('\n');
 
 const rooms:any = {};
 const connections:any = {};
@@ -106,10 +110,7 @@ function createRoom(data: any, userId: any) {
     }
     rooms[room.roomCode] = room;
 
-    const msg_body = {
-        text: `${host.name} has created the room with code ${room.roomCode}`
-    }
-    broadcastMessage(room, "new_room", msg_body);
+    broadcastMessage(room, "new_room");
 }
 
 function joinRoom(data: any, userId: any) {
@@ -129,10 +130,7 @@ function joinRoom(data: any, userId: any) {
     const player = createPlayer(data.name, userId, icon);
     room.players.push(player);
 
-    const msg_body = {
-        text: `${player.name} has joined the room`
-    }
-    broadcastMessage(room, "new_player", msg_body);
+    broadcastMessage(room, "new_player");
 
 }
 
@@ -163,14 +161,13 @@ function submitAnswer(data: any, userId: string) {
     room.remainingAnswers.push(answer);
 
     // filter room.players to players which have an answer != ""
-    const playersWithAnswers = room.players.filter((player: Player) => player.answer !== "").map((player: Player) => player.name);
+    // const playersWithAnswers = room.players.filter((player: Player) => player.answer !== "").map((player: Player) => player.name);
     // map to only return the player name
 
-    const msg_body = {
-        text: `${player.name} has submitted an answer`,
-        submitted: playersWithAnswers
-    }
-    broadcastMessage(room, "new_answer", msg_body);
+    // const msg_body = {
+        // submitted: playersWithAnswers
+    // }
+    broadcastMessage(room, "new_answer");
 
     if (room.remainingAnswers.length === room.players.length) {
         moveToGuess(room);
@@ -179,6 +176,8 @@ function submitAnswer(data: any, userId: string) {
 
 function moveToGuess(room: Room) {
     room.guessing = true;
+    // shuffle room.remainingAnswers
+    room.remainingAnswers.sort(() => Math.random() - 0.5);
     broadcastMessage(room, "move_to_guess");
     if (room.firstPlayerIndex < 0 || room.firstPlayerIndex > room.players.length) { room.firstPlayerIndex = 0 }
     const player = room.players[room.firstPlayerIndex];
@@ -190,20 +189,16 @@ function setPlayerTurn(room: Room, player: Player) {
     if (player === undefined || !player.canGuess) { return }
 
     room.currPlayerId = player.id;
-    const msg_body = {
-        text: `Player ${player.name} can guess`,
-    }
-    broadcastMessage(room, "set_player_turn", msg_body);
+    broadcastMessage(room, "set_player_turn");
 }
 
-const verifyGuess = (room: Room, currUserId: string, guessedPlayerName:string, guessedAnswer: string) => {
+const verifyGuess = (room: Room, currUserId: string, guessedPlayerId:string, guessedAnswer: string) => {
     if (room.remainingAnswers.includes(guessedAnswer) === false) { return false }
 
-    const guessedPlayer = room.players.find((player: Player) => player.name === guessedPlayerName);
+    const guessedPlayer = room.players.find((player: Player) => player.id === guessedPlayerId);
     if (guessedPlayer === undefined || guessedPlayer.id === currUserId) { return false }
-
+    
     if (guessedPlayer.answer === guessedAnswer) {
-        room.remainingAnswers.splice(room.remainingAnswers.indexOf(guessedAnswer), 1);
         return true;
     }
 
@@ -221,32 +216,47 @@ function guess(data: any, userId: string) {
     const playerInd = room.players.findIndex((player: Player) => player.id === userId);
 
     let correctAnswers = 0;
+    let guessedAnswers = [];
     for (let pair of pairs) {
         const answer = pair[1];
-        const name = pair[0];
-        if (verifyGuess(room, userId, name, answer)) {
+        guessedAnswers.push(answer);
+        const guessedPlayerId = pair[0];
+        if (verifyGuess(room, userId, guessedPlayerId, answer)) {
             correctAnswers += 1;
         }
     }
 
     if (correctAnswers === pairs.length) {
         player.points += correctAnswers;
-        const msg_body = {
-            text: `Correct guess! ${player.name} gets ${correctAnswers} points!`,
+        for (let answer of guessedAnswers) {
+            room.remainingAnswers.splice(room.remainingAnswers.indexOf(answer), 1);
         }
-        broadcastMessage(room, "answers", msg_body);
+
+        if (room.remainingAnswers.length <= 1) {
+            player.points += 1;
+
+            const msg_body = {
+                text: `Correct guess! ${player.name} gets ${correctAnswers} points and a bonus point for ending the round!`,
+            }
+            broadcastMessage(room, "answers", msg_body);
+
+            newRound(room.roomCode);
+            return
+        } else {
+
+            const msg_body = {
+                text: `Correct guess! ${player.name} gets ${correctAnswers} points!`,
+            }
+            broadcastMessage(room, "answers", msg_body);
+        }
+
     } else {
         const msg_body = {
             text: `Incorrect guess! ${player.name} had ${correctAnswers} of ${pairs.length} correct!`,
         }
         broadcastMessage(room, "answers", msg_body);
     }
-
-    if (room.remainingAnswers.length === 1) {
-        player.points += 1;
-        newRound(room.roomCode);
-    }
-
+    
     player.canGuess = false;
     const nextPlayerInd = (playerInd + 1)%room.players.length;
     const nextPlayer = room.players[nextPlayerInd];
@@ -279,7 +289,8 @@ function newRound (roomCode: string) {
     }
 
     // TODO: Get questions from file
-    const question = "What is the best color?";
+    const randomIndex = Math.floor(Math.random() * prompts.length);
+    const question = prompts[randomIndex].trim();
     room.currQuestion = question;
 
     broadcastMessage(room, "new_round");

@@ -1,6 +1,7 @@
 import Answer from "./Answer";
 import Guess from "./Guess";
 import Lobby from "./Lobby";
+import Notification from "./Notification";
 import { Player } from "./Player";
 import PlayerIcon from "./PlayerIcon";
 import { Disclosure } from '@headlessui/react'
@@ -17,6 +18,7 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
     let answers:string[] = [];
     let currentPlayerId:string = "";
     let remainingIcons:string[] = [];
+    let textToDisplay:string = "";
     if (lastMessageJson!== null) {
         guessing = lastMessageJson.guessing ? lastMessageJson.guessing : false;
         round = lastMessageJson.round ? lastMessageJson.round : -1;
@@ -27,6 +29,7 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
         answers = lastMessageJson.answers ? lastMessageJson.answers : [];
         currentPlayerId = lastMessageJson.currentPlayerId ? lastMessageJson.currentPlayerId : "";
         remainingIcons = lastMessageJson.remainingIcons ? lastMessageJson.remainingIcons : [];
+        textToDisplay = lastMessageJson.text ? lastMessageJson.text: "";
     }
 
     const guessOrAnswer = () => {
@@ -106,7 +109,7 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
                 </div>
             </div>   
 
-            
+            <Notification text={textToDisplay}/>            
 
         </div>
     )
