@@ -1,45 +1,29 @@
-import {useState} from 'react';
 import { Player } from './Player';
+import PlayerIcon from './PlayerIcon';
+import AnswerInput from './AnswerInput';
 
-const Answer = ({sendJsonMessage, prompt, players}: {sendJsonMessage: any, prompt: string, players: Player[]}) => {
+const Answer = ({sendJsonMessage, prompt, players, playerId}: {sendJsonMessage: any, prompt: string, players: Player[], playerId:string}) => {
         
-    const [answer, setAnswer] = useState('');
-
-    const submitAnswer = () => {
-        sendJsonMessage({
-            "type": "submit_answer",
-            "answer": answer
-        });
-    }
+    const hasAnswered = players.find((player:Player) => player.id === playerId)?.hasAnswered || false;
 
     return (
         <div className="p-4">
             <div className="container p-10 shadow-xl rounded-2xl">
                 <div className='pb-4'>
                     <h3 className='pb-20'>{prompt}</h3>
-                    <h4>
-                        <input name="answer" value={answer} onChange={(e) => setAnswer(e.target.value)} type="text" className="orange-input pt-5" aria-label="Answer" aria-describedby="basic-addon1" />
-                    </h4>
-                </div>
-                <div>
-                    <button className='button-orange p-1 pr-4 pl-4' onClick={submitAnswer}><h4>Submit Answer</h4></button>
+                    <AnswerInput sendJsonMessage={sendJsonMessage} hasAnswered={hasAnswered}/>
                 </div>
             </div>
             <div>
-                <h4 className='pt-20'>Waiting on...</h4>
+                <h4 className='pt-10'>Waiting on...</h4>
+                <div className='grid grid-cols-7 md:grid-cols-10 md:gap-4'>
                 {players.filter((player:Player) => player.hasAnswered === false).map((player:Player) => (
-                    <h4 key={player.id}>
-                        <div className="bg-white rounded-r-lg mt-2 p-1">{player.name}</div> 
+                    <h4 key={player.id + '-wait-icon'}>
+                        <PlayerIcon iconName={player.icon} />
                     </h4>
                 ))}
-            </div>
-            <div>
-                <h4 className='pt-20'>Submitted!</h4>
-                {players.filter((player:Player) => player.hasAnswered === true).map((player:Player) => (
-                    <h4 key={player.id}>
-                        <div className="bg-white rounded-r-lg mt-2 p-1">{player.name}</div> 
-                    </h4>
-                ))}
+                </div>
+
             </div>
         </div>
     )

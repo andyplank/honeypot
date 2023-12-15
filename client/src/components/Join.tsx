@@ -28,11 +28,11 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
                 <div>
                     <div className="pb-20">
                         <h4 className='text-left pb-2'>Enter your username:</h4>
-                        <input name="username" value={username} onChange={(e) => setUsername(e.target.value)} type="text" aria-label="Username" aria-describedby="basic-addon1" className="orange-input"/>
+                        <input name="username" value={username} onChange={(e) => setUsername(e.target.value)} type="text" aria-label="Username" className="orange-input"/>
                     </div>
                     <div>
                         <h4 className='text-left pb-2'>Enter a room code:</h4>
-                        <input className="orange-input" name="roomCode" value={roomCode} onChange={(e) => setRoomCode(e.target.value)} type="text" aria-label="Room code" aria-describedby="basic-addon1"/>
+                        <input className="orange-input" name="roomCode" value={roomCode} onChange={(e) => setRoomCode(e.target.value)} type="text" aria-label="Room code" />
                         <div className='pt-4'>
                             <button className='button-orange w-full	hover:scale-110 duration-500 p-1 pr-4 pl-4' onClick={joinRoom}><p>Join an existing room</p></button>
                         </div>

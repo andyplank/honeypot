@@ -3,6 +3,8 @@ import Guess from "./Guess";
 import Lobby from "./Lobby";
 import { Player } from "./Player";
 import PlayerIcon from "./PlayerIcon";
+import { Disclosure } from '@headlessui/react'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMessageJson: any}) => {
 
@@ -33,20 +35,22 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
         } else if (round === -1) {
             return <Lobby sendJsonMessage={sendJsonMessage} isHost={hostId===playerId} remainingIcons={remainingIcons}/>
         }   else {
-            return <Answer sendJsonMessage={sendJsonMessage} prompt={prompt} players={players}/>
+            return <Answer sendJsonMessage={sendJsonMessage} prompt={prompt} players={players} playerId={playerId}/>
         }
     }
-    
+
     return (
+
         <div className="h-[calc(100vh-150px)]">
+
+            {/* TODO */}
+            {/* Desktop */}
             <div className='grid grid-cols-4 gap-4 h-full hidden sm:grid'>
                 <div className='bg-light-purple pb-4 pr-4'>
                     <h3 className='p-4'>Players</h3>
                     {players.map((player:Player) => (
-                        <div className="flex bg-white rounded-r-lg mt-2 p-1 h-12 justify-between items-center">
-                            <h4 key={player.id}>
-                                {player.name} : {player.points}    
-                            </h4>
+                        <div key={player.id} className="flex bg-white rounded-r-lg mt-2 p-1 h-12 justify-between items-center">
+                            <h4>{player.name} : {player.points}</h4>
                             <div className="test">
                                 <PlayerIcon iconName={player.icon} customClass="h-12"/>
                             </div>
@@ -60,21 +64,50 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
                 </div>
             </div>  
 
-            <div className='h-full block sm:hidden'>
-                <div className='bg-light-purple pb-4 pr-4'>
-                    <h3 className='p-4'>Players</h3>
-                    {players.map((player:Player) => (
-                        <h4 key={player.id}>
-                            <div className="bg-white rounded-r-lg mt-2 p-1">{player.name} : {player.points}</div> 
-                        </h4>
-                    ))}
+            {/* Mobile */}
+            <div className='block sm:hidden h-full'>
+                <div className='bg-light-purple'>
+                    <Disclosure>
+                        {({ open }) => (
+                            <>
+                            <div className="flex justify-between items-center">
+                                <div className="flex justify-start"> 
+                                    <h3 className='p-4'>Players</h3>
+                                </div>
+                                <div className="justify-end">
+                                <Disclosure.Button className="rounded p-2 ">
+                                    <span className="sr-only">Open main menu</span>
+                                    {open ? (
+                                        <XMarkIcon className="block h-7 w-7" aria-hidden="true" />
+                                    ) : (
+                                        <Bars3Icon className="block h-7 w-7" aria-hidden="true" />
+                                    )}
+                                </Disclosure.Button>
+                                </div>
+                            </div>
+                            <Disclosure.Panel className="p-2">
+                                <div>
+                                    {players.map((player) => (
+                                        <div key={player.id} className="flex bg-white rounded mt-2 p-1 h-12 justify-between items-center">
+                                            <h4>{player.name} : {player.points}</h4>
+                                            <div className="">
+                                                <PlayerIcon iconName={player.icon} customClass="h-12"/>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </Disclosure.Panel>
+                            </>
+                            )}
+                    </Disclosure>
                 </div>
-                <div>
-                    <div className='p-4'>
-                        {guessOrAnswer()}
-                    </div>
+                <div className='p-4'>
+                    {guessOrAnswer()}
                 </div>
-            </div>     
+            </div>   
+
+            
+
         </div>
     )
 }
