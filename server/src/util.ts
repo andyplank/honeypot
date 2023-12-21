@@ -3,7 +3,7 @@ import { WebSocket } from 'ws';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 
-const fileContent = fs.readFileSync('./src/prompts.txt').toString();
+const fileContent = fs.readFileSync('./prompts.txt').toString();
 const prompts = fileContent.split('\n');
 
 const rooms:any = {};
