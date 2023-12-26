@@ -16,6 +16,7 @@ const typesDef = {
     submit_answer: 'submit_answer',
     guess: 'guess',
     select_icon: 'select_icon',
+    rejoin: 'rejoin',
 }
 
 // Entry point for a new player
@@ -57,11 +58,29 @@ function handleMessage(message: any, userId: any) {
         case typesDef.submit_answer:
             submitAnswer(data, userId);
             break;
+        case typesDef.rejoin:
+            rejoin(data, userId);
+            break;
         case typesDef.guess:
             guess(data, userId);
             break;
         default:
     }
+}
+
+function rejoin(data: any, userId: any) {
+    const room = getRoom(data.room_code);
+    if (room === null) { return }
+    const player = room.players.find((player: Player) => player.id === data.playerId);
+    if (player === undefined || player.disconnected === false) { return }
+
+    player.id = userId;
+    player.disconnected = false;
+
+    const msg_body = {
+        text: `Player ${player.name} has reconnected`
+    }
+    broadcastMessage(room, "reconnected", msg_body);
 }
 
 function createPlayer(name: string, userId: string, icon: string){
@@ -73,6 +92,7 @@ function createPlayer(name: string, userId: string, icon: string){
         answer: "",
         canGuess: false,
         hasAnswered: false,
+        disconnected: false,
     }
     return player;
 }
@@ -330,12 +350,9 @@ function handleDisconnect(userId: string) {
         const index = room.players.findIndex((player: Player) => player.id === userId);
         if (index === -1) { return }
         const player = room.players[index];
+        player.disconnected = true;
         const msg_body = {
             text: `Player ${player.name} has disconnected`
-        }
-
-        if (index !== -1) {
-            room.players.splice(index, 1);
         }
 
         broadcastMessage(room, "disconnected", msg_body);
@@ -362,6 +379,7 @@ function broadcastMessage(room: Room, type: string, data?: any) {
 
 
     for (let player of room.players) {
+        if (player.disconnected) { continue }
         const client = connections[player.id];
         if (client.readyState === WebSocket.OPEN) {
             const msgAdd = {...message, ...{playerId: player.id}};

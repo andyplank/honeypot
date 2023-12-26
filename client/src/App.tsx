@@ -15,9 +15,17 @@ export default function App() {
 	console.log("app render");
 
     const [roomCode, setRoomCode] = useState('');
+	const [playerId, setPlayerId] = useState('');
     const {lastMessage, sendJsonMessage} = useWebSocket(WS_URL, {
         onOpen: () => {
             console.log('WebSocket connection established.');
+			if (roomCode !== "" && playerId !== "") {
+				const json = {
+					"type": "rejoin",
+					player_id: playerId
+				}
+				sendJsonMessage(json);
+			}
         }
     });
 
@@ -38,6 +46,9 @@ export default function App() {
 		json = JSON.parse(lastMessage.data)
 		if (roomCode === "" && json !== null && json.room_code !== undefined && json.room_code !== roomCode) {
 			setRoomCode(json.room_code);
+		}
+		if (json.playerId !== undefined && json.playerId !== playerId) {
+			setPlayerId(json.playerId);
 		}
 	}
 

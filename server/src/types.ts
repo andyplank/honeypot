@@ -6,6 +6,7 @@ export interface Player {
     answer: string
     canGuess: boolean,
     hasAnswered: boolean,
+    disconnected: boolean,
 }
 
 export interface Room {
