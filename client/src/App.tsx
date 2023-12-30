@@ -20,11 +20,7 @@ export default function App() {
         onOpen: () => {
             console.log('WebSocket connection established.');
 			if (roomCode !== "" && playerId !== "") {
-				const json = {
-					"type": "rejoin",
-					player_id: playerId
-				}
-				sendJsonMessage(json);
+				reconnect();
 			}
         },
 		shouldReconnect: (event) => {
@@ -35,17 +31,11 @@ export default function App() {
 
 	const reconnect = () => {
 		console.log(`attempting recconection with roomCode: ${roomCode} and playerId: ${playerId}`);
-		if (roomCode !== "" && playerId !== "") {
-			const json = {
-				"type": "rejoin",
-				player_id: playerId
-			}
-			sendJsonMessage(json);
+		const json = {
+			"type": "rejoin",
+			playerId: playerId
 		}
-	}
-
-	if (readyState === ReadyState.CLOSED) {
-		reconnect();
+		sendJsonToServer(json);
 	}
 
 	const sendJsonToServer = (json:any) => {

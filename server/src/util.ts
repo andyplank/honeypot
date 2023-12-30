@@ -69,7 +69,7 @@ function handleMessage(message: any, userId: any) {
 }
 
 function rejoin(data: any, userId: any) {
-    console.log(`Rejoining ${userId} to room ${data.room_code}`)
+    console.log(`Rejoining ${userId} as ${data.playerId} to room ${data.room_code}`)
     const room = getRoom(data.room_code);
     if (room === null) { return }
     const player = room.players.find((player: Player) => player.id === data.playerId);
