@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Game from './components/Game';
-import useWebSocket from 'react-use-websocket';
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 import Join from './components/Join';
 import './App.css'
 import Header from './components/Header';
@@ -16,7 +16,7 @@ export default function App() {
 
     const [roomCode, setRoomCode] = useState('');
 	const [playerId, setPlayerId] = useState('');
-    const {lastMessage, sendJsonMessage} = useWebSocket(WS_URL, {
+    const {lastMessage, sendJsonMessage, readyState} = useWebSocket(WS_URL, {
         onOpen: () => {
             console.log('WebSocket connection established.');
 			if (roomCode !== "" && playerId !== "") {
@@ -28,6 +28,21 @@ export default function App() {
 			}
         }
     });
+
+	const reconnect = () => {
+		if (roomCode !== "" && playerId !== "") {
+			const json = {
+				"type": "rejoin",
+				player_id: playerId
+			}
+			sendJsonMessage(json);
+		}
+	}
+
+	if (readyState === ReadyState.CLOSED) {
+		console.log(`attempting recconection with roomCode: ${roomCode} and playerId: ${playerId}`);
+		reconnect();
+	}
 
 	const sendJsonToServer = (json:any) => {
 		let copy:any = {};
@@ -58,13 +73,15 @@ export default function App() {
 		} else {
 			return <Game sendJsonMessage={sendJsonToServer} lastMessageJson={json} />
 		}
-	
 	}
 
 	return (
 		<div className="App h-screen">
 			<Header roomCode={roomCode} />
 			{view()}
+			<div>
+				<button onClick={reconnect}>reconnect</button>
+			</div>
 		</div>
   	);
 }
