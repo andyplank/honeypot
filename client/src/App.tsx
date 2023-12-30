@@ -26,7 +26,7 @@ export default function App() {
 				}
 				sendJsonMessage(json);
 			}
-        }
+        },
     });
 
 	const reconnect = () => {
@@ -79,6 +79,9 @@ export default function App() {
 		<div className="App h-screen">
 			<Header roomCode={roomCode} />
 			{view()}
+			{readyState === ReadyState.CLOSED && <div>Connection lost</div>}
+			{readyState === ReadyState.OPEN && <div>Connection</div>}
+			{readyState}
 			<div>
 				<button onClick={() => reconnect()}>reconnect</button>
 			</div>
