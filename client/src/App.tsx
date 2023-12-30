@@ -30,6 +30,7 @@ export default function App() {
     });
 
 	const reconnect = () => {
+		console.log(`attempting recconection with roomCode: ${roomCode} and playerId: ${playerId}`);
 		if (roomCode !== "" && playerId !== "") {
 			const json = {
 				"type": "rejoin",
@@ -40,7 +41,6 @@ export default function App() {
 	}
 
 	if (readyState === ReadyState.CLOSED) {
-		console.log(`attempting recconection with roomCode: ${roomCode} and playerId: ${playerId}`);
 		reconnect();
 	}
 
@@ -80,7 +80,7 @@ export default function App() {
 			<Header roomCode={roomCode} />
 			{view()}
 			<div>
-				<button onClick={reconnect}>reconnect</button>
+				<button onClick={() => reconnect()}>reconnect</button>
 			</div>
 		</div>
   	);
