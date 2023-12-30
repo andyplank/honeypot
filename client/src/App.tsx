@@ -27,6 +27,10 @@ export default function App() {
 				sendJsonMessage(json);
 			}
         },
+		shouldReconnect: (event) => {
+			console.log(`WebSocket closed with code ${event.code}`);
+			return true;
+		},
     });
 
 	const reconnect = () => {
