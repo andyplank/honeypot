@@ -30,7 +30,7 @@ function Lobby({sendJsonMessage, isHost, remainingIcons}: {sendJsonMessage: any,
                             ) 
                         } else {
                         return  (
-                            <div key={iconName+idx} className='filter grayscale p-2 md:p-4'> 
+                            <div key={iconName+idx} className='filter grayscale p-2 md:p-4 brightness-75'> 
                                 <PlayerIcon iconName={iconName}/>
                             </div>
                         )}

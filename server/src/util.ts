@@ -17,6 +17,7 @@ const typesDef = {
     guess: 'guess',
     select_icon: 'select_icon',
     rejoin: 'rejoin',
+    play_again: 'play_again',
 }
 
 // Entry point for a new player
@@ -64,8 +65,24 @@ function handleMessage(message: any, userId: any) {
         case typesDef.guess:
             guess(data, userId);
             break;
+        case typesDef.play_again:
+            playAgain(data, userId);
+            break;
         default:
     }
+}
+
+function playAgain(data: any, userId: any) {
+    const room = getRoom(data.room_code);
+    if (room === null) { return }
+    if (room.hostId !== userId) {
+        return;
+    }
+    room.roundNumber = -1;
+    for (let player of room.players) {
+        player.points = 0;
+    }
+    broadcastMessage(room, "new_game");
 }
 
 function rejoin(data: any, userId: any) {
@@ -300,7 +317,7 @@ function newRound (roomCode: string) {
 
     room.roundNumber += 1;
     if (room.roundNumber > room.players.length) {
-        room.roundNumber = -1;
+        room.roundNumber = -2;
         broadcastMessage(room, "end_game");
         return
     }

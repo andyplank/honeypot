@@ -1,4 +1,5 @@
 import Answer from "./Answer";
+import EndGame from "./EndGame";
 import Guess from "./Guess";
 import Lobby from "./Lobby";
 import Notification from "./Notification";
@@ -30,6 +31,7 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
         currentPlayerId = lastMessageJson.currentPlayerId ? lastMessageJson.currentPlayerId : "";
         remainingIcons = lastMessageJson.remainingIcons ? lastMessageJson.remainingIcons : [];
         textToDisplay = lastMessageJson.text ? lastMessageJson.text: "";
+        players.sort((a:Player, b:Player) => b.points - a.points);
     }
 
     const guessOrAnswer = () => {
@@ -37,7 +39,9 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
             return <Guess sendJsonMessage={sendJsonMessage} players={players} answers={answers} playerId={playerId} prompt={prompt} currentPlayerId={currentPlayerId}/>
         } else if (round === -1) {
             return <Lobby sendJsonMessage={sendJsonMessage} isHost={hostId===playerId} remainingIcons={remainingIcons}/>
-        }   else {
+        } else if (round === -2) {
+            return <EndGame sendJsonMessage={sendJsonMessage} players={players} isHost={hostId===playerId} />
+        } else {
             return <Answer sendJsonMessage={sendJsonMessage} prompt={prompt} players={players} playerId={playerId}/>
         }
     }

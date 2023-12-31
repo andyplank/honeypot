@@ -17,12 +17,14 @@ function Notification({text}: {text: string}) {
     }
 
 
+    // TODO: fix notifications
+
     return (
     <>
         <div className='bg-purple fixed top-10 left-20 text-white  w-200px rounded'>
         {messages.map((message:string, idx:number) => {
         return (
-            <div className=''>
+            <div key={`${idx}-notification`} className=''>
                 <Transition
                     show={true}
                     enter="transition-opacity duration-75"
