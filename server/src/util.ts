@@ -77,10 +77,7 @@ function rejoin(data: any, userId: any) {
     player.id = userId;
     player.disconnected = false;
 
-    const msg_body = {
-        text: `Player ${player.name} has reconnected`
-    }
-    broadcastMessage(room, "reconnected", msg_body);
+    broadcastMessage(room, "reconnected");
 }
 
 function createPlayer(name: string, userId: string, icon: string){
@@ -351,11 +348,7 @@ function handleDisconnect(userId: string) {
         if (index === -1) { return }
         const player = room.players[index];
         player.disconnected = true;
-        const msg_body = {
-            text: `Player ${player.name} has disconnected`
-        }
-
-        broadcastMessage(room, "disconnected", msg_body);
+        broadcastMessage(room, "disconnected");
     });    
 }
 
