@@ -28,19 +28,28 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
                 <div>
                     <div className="pb-20">
                         <h4 className='text-left pb-2'>Enter your username:</h4>
-                        <input name="username" value={username} onChange={(e) => setUsername(e.target.value)} type="text" aria-label="Username" className="orange-input"/>
+                        <input name="username" type="text" aria-label="Username"
+                            value={username} onChange={(e) => setUsername(e.target.value)} 
+                            className="orange-input" />
                     </div>
                     <div>
                         <h4 className='text-left pb-2'>Enter a room code:</h4>
-                        <input className="orange-input" name="roomCode" value={roomCode} onChange={(e) => setRoomCode(e.target.value)} type="text" aria-label="Room code" />
+                        <input name="roomCode" type="text" aria-label="Room code"
+                            value={roomCode} onChange={(e) => setRoomCode(e.target.value.toUpperCase())} 
+                            className="orange-input" />
                         <div className='pt-4'>
-                            <button className='button-orange w-full	hover:scale-110 duration-500 p-1 pr-4 pl-4' onClick={joinRoom}><p>Join an existing room</p></button>
+                            <button 
+                            className='button-orange w-full	focus:ring hover:scale-110 duration-500 p-1 pr-4 pl-4' onClick={joinRoom} >
+                                <p>Join an existing room</p>
+                            </button>
                         </div>
                     </div>
                             <p className='italic p-4'>Or</p>
                     <div className="">
                         <div className='pt-2'>
-                            <button className='button-orange w-full	hover:scale-110 duration-500 p-1 pr-4 pl-4' onClick={createRoom}><p>Create a new room</p></button>
+                            <button className='button-orange w-full	focus:ring hover:scale-110 duration-500 p-1 pr-4 pl-4' onClick={createRoom} >
+                                <p>Create a new room</p>
+                            </button>
                         </div>
                     </div>
                 </div>
