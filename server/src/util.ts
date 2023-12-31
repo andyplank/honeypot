@@ -3,8 +3,13 @@ import { WebSocket } from 'ws';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 
-const fileContent = fs.readFileSync('./prompts.txt').toString();
-const prompts = fileContent.split('\n');
+let prompts:string[] = ["Test prompt"];
+try {
+    const fileContent = fs.readFileSync('./prompts.txt').toString();
+    prompts = fileContent.split('\n');
+} catch (error) {
+    console.log("Error reading prompts.txt");
+}
 
 const rooms:any = {};
 const connections:any = {};
@@ -45,7 +50,6 @@ function handleMessage(message: any, userId: any) {
     switch (msgType) {
         case typesDef.create_room:
             createRoom(data, userId);
-            startGame(data, userId);
             break;
         case typesDef.join_room:
             joinRoom(data, userId);
@@ -91,6 +95,10 @@ function rejoin(data: any, userId: any) {
     const player = room.players.find((player: Player) => player.id === data.playerId);
     if (player === undefined || player.disconnected === false) { return }
 
+    if (room.hostId === player.id) {
+        room.hostId = userId;
+    }
+
     player.id = userId;
     player.disconnected = false;
 
@@ -124,6 +132,17 @@ function selectIcon(data: any, userId: any) {
     broadcastMessage(room, "icon_selected");
 }
 
+function deleteRoom(roomCode: string) {
+    const room = rooms[roomCode];
+    if (room !== undefined) return;
+    for (let player of room.players) {
+        if (connections[player.id] !== undefined) {
+            delete connections[player.id];
+        }
+    }
+    delete rooms[roomCode];
+}
+
 function createRoom(data: any, userId: any) {
     if (data.name === undefined || data.name === "") { return }
     const host = createPlayer(data.name, userId, "bear");
@@ -143,6 +162,9 @@ function createRoom(data: any, userId: any) {
         guessing: false,
     }
     rooms[room.roomCode] = room;
+    setTimeout(() => {
+        deleteRoom(room.roomCode);
+    }, 1000*60*60*2);
 
     broadcastMessage(room, "new_room");
 }
@@ -322,7 +344,6 @@ function newRound (roomCode: string) {
         return
     }
 
-    // TODO: Get questions from file
     const randomIndex = Math.floor(Math.random() * prompts.length);
     const question = prompts[randomIndex].trim();
     room.currQuestion = question;
