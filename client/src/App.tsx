@@ -71,7 +71,7 @@ export default function App() {
 	}
 
 	return (
-		<div className="App h-screen flex-col flex">
+		<div className="App h-dvh md:h-screen flex-col flex">
 			<Header roomCode={roomCode} />
 			{view()}
 		</div>
