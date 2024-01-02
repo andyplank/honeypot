@@ -48,7 +48,7 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
 
     return (
 
-        <div className="h-[calc(100vh-150px)]">
+        <div className="grow">
 
             {/* TODO */}
             {/* Desktop */}
