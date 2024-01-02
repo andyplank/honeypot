@@ -8,7 +8,7 @@ const Answer = ({sendJsonMessage, prompt, players, playerId}: {sendJsonMessage: 
 
     return (
         <div className="p-4">
-            <div className="container p-10 shadow-xl rounded-2xl">
+            <div className="container p-6 md:p-10 shadow-xl rounded-2xl">
                 <div className='pb-4'>
                     <h3 className='pb-20'>{prompt}</h3>
                     <AnswerInput sendJsonMessage={sendJsonMessage} hasAnswered={hasAnswered}/>

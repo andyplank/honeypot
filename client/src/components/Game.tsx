@@ -72,14 +72,14 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
             </div>  
 
             {/* Mobile */}
-            <div className='block sm:hidden h-full'>
+            <div className='sm:hidden'>
                 <div className='bg-light-purple'>
                     <Disclosure>
                         {({ open }) => (
                             <>
                             <div className="flex justify-between items-center">
                                 <div className="flex justify-start"> 
-                                    <h3 className='p-4'>Players</h3>
+                                    <h3 className='p-2'>Players</h3>
                                 </div>
                                 <div className="justify-end">
                                 <Disclosure.Button className="rounded p-2 ">
@@ -108,7 +108,7 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
                             )}
                     </Disclosure>
                 </div>
-                <div className='p-4'>
+                <div className='pt-4 px-4'>
                     {guessOrAnswer()}
                 </div>
             </div>   
