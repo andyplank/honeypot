@@ -13,13 +13,13 @@ const EndGame = ({sendJsonMessage, players, isHost}: {sendJsonMessage: any, play
     const newGameBtn = () => {
         if (isHost) {
             return (
-                <div className='text-center pt-20'>
+                <div className='text-center pt-10'>
                     <button className='button-orange hover:scale-110 duration-500 p-2 pr-8 pl-8' onClick={playAgain}><h3>Play again?</h3></button>
                 </div>
             )
         } else {
             return (
-                <div className='text-center pt-20'>
+                <div className='text-center pt-10'>
                     <h4>Waiting for host to start a new game...</h4>
                 </div>
             )
