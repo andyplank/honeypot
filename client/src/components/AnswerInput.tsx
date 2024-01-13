@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import verifyInput from './InputVerify';
 
 const AnswerInput = ({sendJsonMessage, hasAnswered}: {sendJsonMessage: any, hasAnswered:boolean}) => {
         
@@ -15,10 +16,15 @@ const AnswerInput = ({sendJsonMessage, hasAnswered}: {sendJsonMessage: any, hasA
         return <h4 className='pb-4'>You have submitted your answer!</h4>
     }
 
+    const answerInput = (inStr: string) => {
+        if (!verifyInput(inStr, 50)) return;
+        setAnswer(inStr.toLocaleUpperCase());
+    }
+
     return (
         <>
             <input name="answer" readOnly={hasAnswered} value={answer} 
-                onChange={(e) => setAnswer(e.target.value)} 
+                onChange={(e) => answerInput(e.target.value)} 
                 type="text" 
                 className="orange-input pt-5" 
                 aria-label="Answer" 

@@ -74,6 +74,10 @@ html, body {
     border-bottom: 3px solid var(--orange);
 }
 
+.text-blue-300 {
+    color: #93c5fd
+}
+
 :focus-visible {
     outline: none;
 }
@@ -88,6 +92,19 @@ html, body {
 
 .bg-light-purple {
     background-color: var(--light-purple);
+}
+
+.fill-purple {
+    fill: var(--purple);
+}
+
+.text-purple {
+    color: var(--purple);
+}
+
+.break-word {
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 .button-orange {
@@ -118,3 +135,20 @@ html, body {
   }
 
 
+@keyframes fadeAway {
+    0% {
+      opacity: 1;
+    }
+    65% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+.fadeAway {
+    animation-duration: 3.5s;
+    animation-name: fadeAway;
+    opacity: 0;
+}

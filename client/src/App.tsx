@@ -5,6 +5,7 @@ import Join from './components/Join';
 import './App.css'
 import Header from './components/Header';
 import registerServiceWorker from './components/ServiceWorker';
+import Loader from './components/Loader';
 
 export default function App() {
 	const WS_URL = process.env.REACT_APP_API_URL || 'ws://localhost:8000';
@@ -31,7 +32,6 @@ export default function App() {
     });
 
 	const reconnect = () => {
-		console.log(`Attempting recconection with roomCode: ${roomCode} and playerId: ${playerId}`);
 		const json = {
 			"type": "rejoin",
 			playerId: playerId
@@ -74,6 +74,7 @@ export default function App() {
 		<div className="App h-dvh md:h-screen flex-col flex">
 			<Header roomCode={roomCode} />
 			{view()}
+			<Loader />
 		</div>
   	);
 }

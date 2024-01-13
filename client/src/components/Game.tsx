@@ -50,7 +50,6 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
 
         <div className="grow">
 
-            {/* TODO */}
             {/* Desktop */}
             <div className='grid grid-cols-4 gap-4 h-full hidden sm:grid'>
                 <div className='bg-light-purple pb-4 pr-4'>
