@@ -1,7 +1,10 @@
+import { Transition } from "@headlessui/react";
+import { Fragment, useState, useEffect } from "react";
 import { Player } from "./Player";
 import PlayerIcon from "./PlayerIcon";
 
 const EndGame = ({sendJsonMessage, players, isHost}: {sendJsonMessage: any, players: Player[], isHost: boolean}) => {
+    const [isShowing, setIsShowing] = useState(false);
     const winner = players.reduce((prev, curr) => prev.points > curr.points ? prev : curr);
 
     const playAgain = () => {
@@ -9,6 +12,12 @@ const EndGame = ({sendJsonMessage, players, isHost}: {sendJsonMessage: any, play
             "type": "play_again",
         });
     };
+
+    useEffect(() => {
+        setTimeout(() => {
+            setIsShowing(true);
+        }, 1000);   
+    }, []);
 
     const newGameBtn = () => {
         if (isHost) {
@@ -29,11 +38,29 @@ const EndGame = ({sendJsonMessage, players, isHost}: {sendJsonMessage: any, play
     return (
         <div className="text-center">
             <h1>And the winner is...</h1>
-                <div className="flex justify-center">
-                    <PlayerIcon iconName={winner.icon} customClass="max-h-40 md:max-h-80"/>
-                </div>
-                <h2 className="pt-4">Thanks for playing!</h2>
-            {newGameBtn()}
+                <Transition
+                    as={Fragment}
+                    show={isShowing}
+                    enter="transform transition duration-[400ms]"
+                    enterFrom="scale-0"
+                    enterTo="scale-100"
+                >
+                    <div className="flex justify-center">
+                        <PlayerIcon iconName={winner.icon} customClass="max-h-40 md:max-h-80"/>
+                    </div>
+                </Transition>
+                <Transition
+                    as={Fragment}
+                    show={isShowing}
+                    enter="transform transition duration-[600ms] delay-[1000ms]"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                >
+                    <div>
+                        <h2 className="pt-4">Thanks for playing!</h2>
+                        {newGameBtn()}
+                    </div>
+                </Transition>
         </div>
     );
 }

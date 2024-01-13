@@ -14,7 +14,7 @@ export default function Spin() {
         },2000);
         setTimeout(() => {
             isHidden(true);
-        },3400);
+        },3200);
     }, []);
 
     if (hidden) return (<></>);
