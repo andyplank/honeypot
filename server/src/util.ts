@@ -13,6 +13,7 @@ try {
 
 const rooms:any = {};
 const connections:any = {};
+const playerToRoom:any = {};
 
 const typesDef = {
     create_room: 'create_room',
@@ -42,10 +43,12 @@ function handleMessage(message: any, userId: any) {
         return;
     }
 
-    if (data.room_code !== undefined && typeof data.room_code === "string") { 
-        data.room_code = data.room_code.toLowerCase();
+    console.log(data);
+    if (data.room_code !== undefined && data.room_code !== "") { 
+        if (!validString(data.room_code, 6)) return;
+        data.room_code = data.room_code.toUpperCase();
     }
-
+    
     const msgType = data.type;
     switch (msgType) {
         case typesDef.create_room:
@@ -99,6 +102,8 @@ function rejoin(data: any, userId: any) {
         room.hostId = userId;
     }
 
+    playerToRoom[userId] = data.room_code;
+    room.connectedPlayers += 1;
     player.id = userId;
     player.disconnected = false;
 
@@ -133,18 +138,20 @@ function selectIcon(data: any, userId: any) {
 }
 
 function deleteRoom(roomCode: string) {
+    if (!validString(roomCode, 6)) return;
     const room = rooms[roomCode];
-    if (room !== undefined) return;
+    if (room === undefined) return;
     for (let player of room.players) {
         if (connections[player.id] !== undefined) {
             delete connections[player.id];
         }
     }
     delete rooms[roomCode];
+    rooms[roomCode] = undefined;
 }
 
 function createRoom(data: any, userId: any) {
-    if (data.name === undefined || data.name === "") { return }
+    if (!validString(data.name, 10)) return;
     const host = createPlayer(data.name, userId, "bear");
     const code = data.room_code ? data.room_code : generateRandomString(6);
     if (getRoom(code) !== null) { return }
@@ -160,42 +167,47 @@ function createRoom(data: any, userId: any) {
         remainingIcons: new Set(["cat", "chicken", "cow", "dog", "fox", "horse", "lion", "mouse", "panda", "pig", "sheep", "snake", "tiger"]),
         roundNumber: -1,
         guessing: false,
+        pastQuestions: new Set([]),
+        connectedPlayers: 1,
     }
-    rooms[room.roomCode] = room;
-    setTimeout(() => {
-        deleteRoom(room.roomCode);
-    }, 1000*60*60*2);
+    rooms[code] = room;
+    playerToRoom[userId] = data.room_code;
+
+    setTimeout((roomCode) => {
+        deleteRoom(roomCode);
+    }, 7200000, code);
 
     broadcastMessage(room, "new_room");
 }
 
 function joinRoom(data: any, userId: any) {
-    if (data.name === undefined || data.room_code === undefined || data.name === "") { return }
+    if (!validString(data.name, 10)) return;
     const room = getRoom(data.room_code);
     if (room === null || room.roundNumber !== -1) { return }
 
-    // User is already in the room
+    // User is already in a room
+    if (userId in playerToRoom) { return }
     const index = room.players.findIndex((player: Player) => player.id === userId);
     if (index !== -1) { return }
 
     // get the first icon from the remainingIcons array and remove it from the array
-    const icon = room.remainingIcons.keys().next().value;
-    room.remainingIcons.delete(icon);
+    const icon:string = room.remainingIcons.keys().next().value;
     if (icon === undefined) { return }
+    room.remainingIcons.delete(icon);
 
     const player = createPlayer(data.name, userId, icon);
+    playerToRoom[userId] = data.room_code;
     room.players.push(player);
+    room.connectedPlayers += 1;
 
     broadcastMessage(room, "new_player");
-
 }
 
 function startGame(data: any, userId: string) {
     const room = getRoom(data.room_code);
     if (room === null) { return }
-    if (room.hostId !== userId) {
-        return;
-    }
+    if (room.hostId !== userId) { return }
+
     room.roundNumber = 0;
     for (let player of room.players) {
         player.points = 0;
@@ -204,8 +216,9 @@ function startGame(data: any, userId: string) {
     newRound(room.roomCode);
 }
 
-function submitAnswer(data: any, userId: string) {
-    const answer = data.answer;
+const submitAnswer = (data: any, userId: string) => {
+    if (!validString(data.answer, 50)) { return }
+    const answer:string = data.answer.toUpperCase();
 
     const room = getRoom(data.room_code);
     if (room === null) { return }
@@ -216,13 +229,6 @@ function submitAnswer(data: any, userId: string) {
     player.hasAnswered = true;
     room.remainingAnswers.push(answer);
 
-    // filter room.players to players which have an answer != ""
-    // const playersWithAnswers = room.players.filter((player: Player) => player.answer !== "").map((player: Player) => player.name);
-    // map to only return the player name
-
-    // const msg_body = {
-        // submitted: playersWithAnswers
-    // }
     broadcastMessage(room, "new_answer");
 
     if (room.remainingAnswers.length === room.players.length) {
@@ -232,7 +238,6 @@ function submitAnswer(data: any, userId: string) {
 
 function moveToGuess(room: Room) {
     room.guessing = true;
-    // shuffle room.remainingAnswers
     room.remainingAnswers.sort(() => Math.random() - 0.5);
     broadcastMessage(room, "move_to_guess");
     if (room.firstPlayerIndex < 0 || room.firstPlayerIndex > room.players.length) { room.firstPlayerIndex = 0 }
@@ -249,6 +254,7 @@ function setPlayerTurn(room: Room, player: Player) {
 }
 
 const verifyGuess = (room: Room, currUserId: string, guessedPlayerId:string, guessedAnswer: string) => {
+    if (!validString(guessedAnswer, 50)) { return false }
     if (room.remainingAnswers.includes(guessedAnswer) === false) { return false }
 
     const guessedPlayer = room.players.find((player: Player) => player.id === guessedPlayerId);
@@ -261,7 +267,7 @@ const verifyGuess = (room: Room, currUserId: string, guessedPlayerId:string, gue
     return false;
 }
 
-function guess(data: any, userId: string) {
+const guess = (data: any, userId: string) => {
     const pairs: [string, string][] = data.pairs;
 
     const room = getRoom(data.room_code);
@@ -272,17 +278,24 @@ function guess(data: any, userId: string) {
     const playerInd = room.players.findIndex((player: Player) => player.id === userId);
 
     let correctAnswers = 0;
-    let guessedAnswers = [];
+    let guessedAnswers:string[] = [];
     for (let pair of pairs) {
         const answer = pair[1];
-        guessedAnswers.push(answer);
         const guessedPlayerId = pair[0];
+        guessedAnswers.push(answer);
         if (verifyGuess(room, userId, guessedPlayerId, answer)) {
             correctAnswers += 1;
         }
     }
 
-    if (correctAnswers === pairs.length) {
+    if (correctAnswers !== pairs.length) {
+        const msg_body = {
+            text: `Incorrect guess! ${player.name} had ${correctAnswers} of ${pairs.length} correct!`,
+        }
+        broadcastMessage(room, "answers", msg_body);
+    
+    } else {
+
         player.points += correctAnswers;
         for (let answer of guessedAnswers) {
             room.remainingAnswers.splice(room.remainingAnswers.indexOf(answer), 1);
@@ -298,6 +311,7 @@ function guess(data: any, userId: string) {
 
             newRound(room.roomCode);
             return
+
         } else {
 
             const msg_body = {
@@ -306,11 +320,6 @@ function guess(data: any, userId: string) {
             broadcastMessage(room, "answers", msg_body);
         }
 
-    } else {
-        const msg_body = {
-            text: `Incorrect guess! ${player.name} had ${correctAnswers} of ${pairs.length} correct!`,
-        }
-        broadcastMessage(room, "answers", msg_body);
     }
     
     player.canGuess = false;
@@ -321,7 +330,7 @@ function guess(data: any, userId: string) {
     setPlayerTurn(room, nextPlayer);
 }
 
-function newRound (roomCode: string) {
+const newRound = (roomCode: string) => {
     const room = getRoom(roomCode);
     if (room === null) { return }
     room.guessing = false;
@@ -344,8 +353,17 @@ function newRound (roomCode: string) {
         return
     }
 
-    const randomIndex = Math.floor(Math.random() * prompts.length);
-    const question = prompts[randomIndex].trim();
+    let questionIndex = Math.floor(Math.random() * prompts.length);
+    if (room.pastQuestions.has(questionIndex)) {
+        if (room.pastQuestions.size === prompts.length) {
+            room.pastQuestions.clear();
+        }
+        while (questionIndex in room.pastQuestions) {
+            questionIndex = (questionIndex + 1) % prompts.length;
+        }
+    }
+    const question = prompts[questionIndex];
+    room.pastQuestions.add(questionIndex);
     room.currQuestion = question;
 
     broadcastMessage(room, "new_round");
@@ -353,7 +371,7 @@ function newRound (roomCode: string) {
 
 
 function generateRandomString(length: number):string {
-    const letters = 'abcdefghijklmnopqrstuvwxyz';
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = '';
     for (let i = 0; i < length; i++) {
       const randomIndex = Math.floor(Math.random() * letters.length);
@@ -373,21 +391,29 @@ const getPlayer = (room: Room, userId: string) => {
     return room.players.find((player: Player) => player.id === userId);
 }
 
-// TODO: remove player answers and icons from room
 function handleDisconnect(userId: string) {
     delete connections[userId];
-    // loop over all the rooms and find any rooms with playerId = userId
-    // if found, delete that player from the room
-    const roomKeys = Object.keys(rooms);
-    if (roomKeys === undefined) { return }
-    roomKeys.forEach((roomKey: string) => {
-        const room = rooms[roomKey];
-        const index = room.players.findIndex((player: Player) => player.id === userId);
-        if (index === -1) { return }
-        const player = room.players[index];
-        player.disconnected = true;
-        broadcastMessage(room, "disconnected");
-    });    
+
+    const roomId = playerToRoom[userId];
+    if (!validString(roomId, 6)) return;
+    
+    const room = getRoom(roomId);
+    if (room === null) { return }
+    
+    const player = room.players.find((player: Player) => player.id === userId);
+    if (player === undefined) { return }
+    player.disconnected = true;
+    room.connectedPlayers -= 1;
+    
+    broadcastMessage(room, "disconnected");
+    if (room.connectedPlayers === 0) {
+        setTimeout((roomCode) => {
+            const room = getRoom(roomCode);
+            if (room !== null && room !== undefined && room.connectedPlayers === 0) {
+                deleteRoom(room.roomCode);
+            }
+        }, 120000, room.roomCode);
+    }
 }
 
 // Send message to all clients in a room
@@ -408,7 +434,6 @@ function broadcastMessage(room: Room, type: string, data?: any) {
         ...data
     }
 
-
     for (let player of room.players) {
         if (player.disconnected) { continue }
         const client = connections[player.id];
@@ -418,4 +443,21 @@ function broadcastMessage(room: Room, type: string, data?: any) {
             client.send(toSend);
         }
     }
+}
+
+function validString(str: string, maxLength: number) {
+    if (typeof str !== "string") { return false }
+    if (str === undefined || str === "") { return false }
+    if (str.length > maxLength) { return false }
+    for (let i = 0, len = str.length; i < len; i++) {
+        const code = str.charCodeAt(i);
+        if (!(code > 47 && code < 58) && // numeric (0-9)
+            !(code > 64 && code < 91) && // upper alpha (A-Z)
+            !(code > 96 && code < 123) && // lower alpha (a-z)
+            !(code === 32 || code === 63 || code === 46 || code === 44) // space, ?, ., ,
+        ) { 
+            return false;
+        }
+      }
+    return true;
 }
