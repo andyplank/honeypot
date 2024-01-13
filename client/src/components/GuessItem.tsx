@@ -21,18 +21,16 @@ const GuessItem = ({answer, players, addGuess, index, currentGuessId, isPicking}
     const guessedIcon = players.find((player:Player) => player.id === currentGuessId)?.icon || "none";
 
     return (
-            <Menu as="div" className="relative ">
-        <Menu.Button className="outline outline-1 rounded-md w-full p-2 flex-1">
-            <div >
-                {answer}
-                {
-                  hasGuessed &&
-                  <div className='absolute right-0 -bottom-5 h-20'>
-                    <PlayerIcon iconName={guessedIcon} customClass="h-10"/>
-                  </div>
-                }
+      <Menu as="div" className="relative">
+        <Menu.Button className="border-b-2 w-full text-left p-2 flex-1 disabled:opacity-50 break-word overflow-x-auto" disabled={!isPicking} >
+          {answer}
+          {
+            hasGuessed &&
+            <div className='absolute right-0 -bottom-5 h-20'>
+              <PlayerIcon iconName={guessedIcon} customClass="h-10"/>
             </div>
-        </Menu.Button>
+          }
+      </Menu.Button>
 
       <Transition
         as={Fragment}

@@ -20,6 +20,8 @@ export interface Room {
     firstPlayerIndex: number,
     roundNumber: number,
     guessing: boolean,
+    pastQuestions: Set<number>,
+    connectedPlayers: number,
 }
 
 export interface Message {

@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import verifyInput from './InputVerify';
 
 const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, roomCode: any, setRoomCode: any}) => {
         
@@ -18,6 +19,16 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
         });
     };
 
+    const usernameInput = (inStr: string) => {
+        if (!verifyInput(inStr, 10)) return;
+        setUsername(inStr);
+    }
+
+    const roomCodeInput = (inStr: string) => {
+        if (!verifyInput(inStr, 6)) return;
+        setRoomCode(inStr.toLocaleUpperCase());
+    }
+
     return (
         <div className='grow bg-light-purple justify-center items-center flex'>
             <div>
@@ -30,13 +41,13 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
                         <div className="pb-20">
                             <h4 className='text-left pb-2'>Enter your username:</h4>
                             <input name="username" type="text" aria-label="Username"
-                                value={username} onChange={(e) => setUsername(e.target.value)} 
+                                value={username} onChange={(e) => usernameInput(e.target.value)} 
                                 className="orange-input" />
                         </div>
                         <div>
                             <h4 className='text-left pb-2'>Enter a room code:</h4>
                             <input name="roomCode" type="text" aria-label="Room code"
-                                value={roomCode} onChange={(e) => setRoomCode(e.target.value.toUpperCase())} 
+                                value={roomCode} onChange={(e) => roomCodeInput(e.target.value)} 
                                 className="orange-input" />
                             <div className='pt-4'>
                                 <button 
