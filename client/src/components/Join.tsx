@@ -9,8 +9,8 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
         const queryParameters = new URLSearchParams(window.location.search)
         window.history.pushState({}, document.title, "/")
         const roomParam = queryParameters.get("room")
-        if (roomParam !== null && roomParam !== undefined && verifyInput(roomParam, 6)) 
-            setRoomCode(roomParam.toLocaleUpperCase());
+        if (roomParam === undefined || roomParam === null) return;
+        roomCodeInput(roomParam);
     });
 
     const createRoom = () => {

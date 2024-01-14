@@ -18,7 +18,7 @@ const AnswerInput = ({sendJsonMessage, hasAnswered}: {sendJsonMessage: any, hasA
 
     const answerInput = (inStr: string) => {
         if (!verifyInput(inStr, 50)) return;
-        setAnswer(inStr.toLocaleUpperCase());
+        setAnswer(inStr.toLocaleLowerCase());
     }
 
     return (

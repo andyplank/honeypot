@@ -78,6 +78,10 @@ html, body {
     color: #93c5fd
 }
 
+.bg-red-300 {
+    background: #fca5a5;
+}
+
 :focus-visible {
     outline: none;
 }

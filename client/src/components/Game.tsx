@@ -63,15 +63,20 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
                         </div>
                     ))}
                 </div>
-                <div className='col-span-3'>
+                <div className='col-span-3 flex-col flex'>
                     <div className='p-4'>
                         {guessOrAnswer()}
+                    </div>
+                    <div className="grow relative">
+                        <div className="w-full absolute bottom-0 left-0 pr-4 pb-2">
+                            {round !== -2 && <Notification text={textToDisplay}/>}
+                        </div>
                     </div>
                 </div>
             </div>  
 
             {/* Mobile */}
-            <div className='lg:hidden'>
+            <div className='lg:hidden h-full flex flex-col '>
                 <div className='bg-light-purple'>
                     <Disclosure>
                         {({ open }) => (
@@ -110,10 +115,11 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
                 <div className='pt-4 px-4'>
                     {guessOrAnswer()}
                 </div>
+                <div className="grow"></div>
+                <div className="pr-4 pb-2 pl-4">
+                    {round !== -2 && <Notification text={textToDisplay}/>}
+                </div>
             </div>   
-
-            <Notification text={textToDisplay}/>            
-
         </div>
     )
 }

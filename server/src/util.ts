@@ -218,7 +218,7 @@ function startGame(data: any, userId: string) {
 
 const submitAnswer = (data: any, userId: string) => {
     if (!validString(data.answer, 50)) { return }
-    const answer:string = data.answer.toUpperCase();
+    const answer:string = data.answer.toLowerCase();
 
     const room = getRoom(data.room_code);
     if (room === null) { return }
@@ -456,7 +456,7 @@ function validString(str: string, maxLength: number) {
         if (!(code > 47 && code < 58) && // numeric (0-9)
             !(code > 64 && code < 91) && // upper alpha (A-Z)
             !(code > 96 && code < 123) && // lower alpha (a-z)
-            !(code === 32 || code === 63 || code === 46 || code === 44) // space, ?, ., ,
+            !(code === 32 || code === 63 || code === 46 || code === 44 || code === 33 || code === 34 || code === 39) // space, ?, ., ,, !, ", '
         ) { 
             return false;
         }
