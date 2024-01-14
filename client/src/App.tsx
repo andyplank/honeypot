@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Game from './components/Game';
 import useWebSocket from 'react-use-websocket';
 import Join from './components/Join';
 import './App.css'
 import Header from './components/Header';
-import registerServiceWorker from './components/ServiceWorker';
 import Loader from './components/Loader';
 
 export default function App() {
 	const WS_URL = process.env.REACT_APP_API_URL || 'ws://localhost:8000';
-	useEffect(() => {
-		console.log("app mount");
-		registerServiceWorker();
-	}, []);
+	// useEffect(() => {
+	// 	console.log("app mount");
+	// 	registerServiceWorker();
+	// }, []);
 	console.log("app render");
 
     const [roomCode, setRoomCode] = useState('');
