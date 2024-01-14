@@ -20,6 +20,7 @@ function Lobby({sendJsonMessage, isHost, remainingIcons}: {sendJsonMessage: any,
         });
     };
 
+
     return (
         <div>
             <div className="px-5 py-2 md:p-10 shadow-xl rounded-2xl w-full">
@@ -27,18 +28,17 @@ function Lobby({sendJsonMessage, isHost, remainingIcons}: {sendJsonMessage: any,
                     <h3 className='pb-4 lg:pb-10'>Select your icon:</h3>
                     <div className='grid grid-cols-3 gap-2 lg:grid-cols-5'>
                     {Object.keys(iconMap).map((iconName: string, idx:number) => {
-                        if (remainingIcons.includes(iconName)) {
-                            return (
-                                <div key={iconName+idx} className='hover:scale-110 duration-500 p-2 cursor-pointer lg:max-w-[175px] 3xl:max-w-[225px]' onClick={() => selectIcon(iconName)}> 
-                                    <PlayerIcon iconName={iconName} />
-                                </div>
-                            ) 
+                        let iconClasses = "p-2 min-h-[80px] lg:min-h-[150px] 3xl-min-h-[200px] lg:max-w-[175px] 3xl:max-w-[225px]"
+                        if (!remainingIcons.includes(iconName)) {
+                            iconClasses += " filter grayscale p-2 brightness-75"
                         } else {
-                        return  (
-                            <div key={iconName+idx} className='filter grayscale p-2 brightness-75 lg:max-w-[175px] 3xl:max-w-[225px]'> 
+                            iconClasses += " cursor-pointer hover:scale-110 duration-500"
+                        }
+                        return (
+                            <div key={iconName+idx} className={iconClasses} onClick={() => selectIcon(iconName)}> 
                                 <PlayerIcon iconName={iconName} />
                             </div>
-                        )}
+                        ) 
                     })}
                     </div>
                 </div>
