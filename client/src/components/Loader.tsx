@@ -32,7 +32,7 @@ export default function Spin() {
                 leaveFrom="opacity-100 rotate-0 scale-100 "
                 leaveTo="opacity-0 scale-95 "
                 >
-                    <img src={`./honey.png`} alt={"honey"} />
+                    <img src={`./logo.png`} alt={"honey"} />
                 </Transition>
             </div>
         </div>

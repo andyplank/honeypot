@@ -7,7 +7,7 @@ const Header = ({roomCode}: {roomCode:string}) => {
               <a href="/">
                   <img
                       className="h-[60px] md:h-[130px]"
-                      src="/logo192.png"
+                      src="/logo.png"
                       alt="Honeypot"
                   />
               </a>
