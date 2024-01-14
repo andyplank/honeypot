@@ -1,9 +1,17 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import verifyInput from './InputVerify';
 
 const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, roomCode: any, setRoomCode: any}) => {
         
     const [username, setUsername] = useState('');
+    
+    useEffect(() => {
+        const queryParameters = new URLSearchParams(window.location.search)
+        window.history.pushState({}, document.title, "/")
+        const roomParam = queryParameters.get("room")
+        if (roomParam !== null && roomParam !== undefined && verifyInput(roomParam, 6)) 
+            setRoomCode(roomParam.toLocaleUpperCase());
+    });
 
     const createRoom = () => {
         sendJsonMessage(({

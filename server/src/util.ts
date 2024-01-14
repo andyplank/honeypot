@@ -164,7 +164,7 @@ function createRoom(data: any, userId: any) {
         currQuestion: "",
         currPlayerId: host.id,
         remainingAnswers: [],
-        remainingIcons: new Set(["cat", "chicken", "cow", "dog", "fox", "horse", "lion", "mouse", "panda", "pig", "sheep", "snake", "tiger"]),
+        remainingIcons: new Set(["cat", "chicken", "cow", "dog", "fox", "horse", "lion", "mouse", "panda", "pig", "sheep", "snake", "tiger", "monkey"]),
         roundNumber: -1,
         guessing: false,
         pastQuestions: new Set([]),
@@ -384,7 +384,9 @@ function getRoom(code: string): Room | null{
     if (code in rooms === false) {
         return null;
     }
-    return rooms[code];
+    const room = rooms[code];
+    if (room === undefined) return null;
+    return room;
 }
 
 const getPlayer = (room: Room, userId: string) => {

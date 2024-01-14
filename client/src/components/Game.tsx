@@ -51,7 +51,7 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
         <div className="grow">
 
             {/* Desktop */}
-            <div className='grid grid-cols-4 gap-4 h-full hidden sm:grid'>
+            <div className='grid grid-cols-4 gap-4 h-full hidden lg:grid'>
                 <div className='bg-light-purple pb-4 pr-4'>
                     <h3 className='p-4'>Players</h3>
                     {players.map((player:Player) => (
@@ -71,7 +71,7 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
             </div>  
 
             {/* Mobile */}
-            <div className='sm:hidden'>
+            <div className='lg:hidden'>
                 <div className='bg-light-purple'>
                     <Disclosure>
                         {({ open }) => (

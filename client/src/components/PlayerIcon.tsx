@@ -12,7 +12,8 @@ export const iconMap:any = {
     horse: "horse.svg",
     pig: "pig.svg",
     sheep: "sheep.svg",
-    cow: "cow.svg"
+    cow: "cow.svg",
+    monkey: "monkey.svg",
 }
 
 const PlayerIcon = ({iconName, customClass}: {iconName: string, customClass?: string}) => {

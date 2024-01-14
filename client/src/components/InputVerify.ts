@@ -1,4 +1,5 @@
-const verifyInput = (inStr: string, maxLength:number) => {
+const verifyInput = (inStr: string | null | undefined, maxLength:number) => {
+    if (inStr === null || inStr === undefined) return false
     if (inStr.length > maxLength) return false
     for (let i = 0, len = inStr.length; i < len; i++) {
         const code = inStr.charCodeAt(i);
