@@ -21,7 +21,7 @@ export default function Spin() {
 
     return (
         <div className="h-screen w-screen z-40 bg-white fadeAway flex fixed items-center justify-center transistion-opacity ease-in-out duration-300 delay-[2000ms]">
-            <div className="h-32 w-32">
+            <div className="h-52 w-52">
                 <Transition
                 as={Fragment}
                 show={isShowing}

@@ -38,29 +38,40 @@ const EndGame = ({sendJsonMessage, players, isHost}: {sendJsonMessage: any, play
     return (
         <div className="text-center">
             <h1>And the winner is...</h1>
+            <Transition
+                as={Fragment}
+                show={isShowing}
+                enter="transform transition duration-[400ms]"
+                enterFrom="scale-0"
+                enterTo="scale-100"
+            >
+                <div className="flex justify-center">
+                    <PlayerIcon iconName={winner.icon} customClass="max-h-40 md:max-h-80"/>
+                </div>
+            </Transition>
+
+            <div>
                 <Transition
                     as={Fragment}
                     show={isShowing}
-                    enter="transform transition duration-[400ms]"
-                    enterFrom="scale-0"
-                    enterTo="scale-100"
+                    enter="transform transition duration-[750ms] delay-[1200ms]"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
                 >
-                    <div className="flex justify-center">
-                        <PlayerIcon iconName={winner.icon} customClass="max-h-40 md:max-h-80"/>
-                    </div>
+                    <h2 className="pt-4">Thanks for playing!</h2>
                 </Transition>
                 <Transition
                     as={Fragment}
                     show={isShowing}
-                    enter="transform transition duration-[600ms] delay-[1000ms]"
+                    enter="transform transition duration-[750ms] delay-[1800ms]"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
                 >
                     <div>
-                        <h2 className="pt-4">Thanks for playing!</h2>
-                        {newGameBtn()}
+                    {newGameBtn()}
                     </div>
                 </Transition>
+            </div>
         </div>
     );
 }

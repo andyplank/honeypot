@@ -29,7 +29,7 @@ function Lobby({sendJsonMessage, isHost, remainingIcons}: {sendJsonMessage: any,
                     {Object.keys(iconMap).map((iconName: string, idx:number) => {
                         if (remainingIcons.includes(iconName)) {
                             return (
-                                <div key={iconName+idx} className='hover:scale-110 duration-500 p-2 lg:p-4' onClick={() => selectIcon(iconName)}> 
+                                <div key={iconName+idx} className='hover:scale-110 duration-500 p-2 lg:p-4 cursor-pointer' onClick={() => selectIcon(iconName)}> 
                                     <PlayerIcon iconName={iconName}/>
                                 </div>
                             ) 
