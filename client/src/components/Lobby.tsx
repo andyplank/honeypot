@@ -52,7 +52,7 @@ function Lobby({sendJsonMessage, isHost, remainingIcons}: {sendJsonMessage: any,
             {!isHost &&
             <div className='text-center pb-4 pt-8 md:pt-15'>
                 <h4>Waiting for host to start the game. While you wait,&nbsp;
-                    <span onClick={() => setOpen(true)} className="text-blue-300 underline hover:cursor-pointer">learn how to play</span>!
+                    <span onClick={() => setOpen(true)} className="text-blue-300 hover:cursor-pointer">learn how to play</span>!
                 </h4>
             </div>
             }   

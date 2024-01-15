@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 
 export default function Help({open, setOpen, title, text}: {open: boolean, setOpen: any, title: string, text: string}) {
 
@@ -27,6 +28,7 @@ export default function Help({open, setOpen, title, text}: {open: boolean, setOp
                       <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
                         {title}
                       </Dialog.Title>
+                      <XMarkIcon type="button" onClick={() => setOpen(false)} className="cursor-pointer h-7 w-7 absolute right-2 top-2" aria-hidden="true" />
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
                             {text}
@@ -36,13 +38,6 @@ export default function Help({open, setOpen, title, text}: {open: boolean, setOp
                   </div>
                 </div>
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                  <button
-                    type="button"
-                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                    onClick={() => setOpen(false)}
-                  >
-                    Done
-                  </button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
