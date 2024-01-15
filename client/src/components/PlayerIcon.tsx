@@ -24,7 +24,7 @@ const PlayerIcon = ({iconName, customClass}: {iconName: string, customClass?: st
     const icon = iconMap[iconName];
 
     return (
-        <img src={`./icons/${icon}`} alt={iconName} className={customClass}/>
+        <img src={'./icons/' + icon} alt={iconName} className={customClass} />
     )
 }
 

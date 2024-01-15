@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Game from './components/Game';
 import useWebSocket from 'react-use-websocket';
 import Join from './components/Join';
@@ -6,12 +6,41 @@ import './App.css'
 import Header from './components/Header';
 import Loader from './components/Loader';
 
+const cacheImages = async (srcArray: string[]) => {
+	const promises = await srcArray.map((src) => {
+		return new Promise((resolve, reject) => {
+			const img = new Image();
+			img.src = src;
+			img.onload = resolve;
+			img.onerror = reject;
+		});
+	}
+	);
+	await Promise.all(promises);
+}
+
 export default function App() {
 	const WS_URL = process.env.REACT_APP_API_URL || 'ws://localhost:8000';
-	// useEffect(() => {
-	// 	console.log("app mount");
-	// 	registerServiceWorker();
-	// }, []);
+	useEffect(() => {
+		const imgs = [
+			"./icons/bear.svg",
+			"./icons/chicken.svg",
+			"./icons/cat.svg",
+			"./icons/dog.svg",
+			"./icons/fox.svg",
+			"./icons/lion.svg",
+			"./icons/mouse.svg",
+			"./icons/panda.svg",
+			"./icons/snake.svg",
+			"./icons/tiger.svg",
+			"./icons/horse.svg",
+			"./icons/pig.svg",
+			"./icons/sheep.svg",
+			"./icons/cow.svg",
+			"./icons/monkey.svg",
+		];
+		cacheImages(imgs);
+	}, []);
 	console.log("app render");
 
     const [roomCode, setRoomCode] = useState('');
