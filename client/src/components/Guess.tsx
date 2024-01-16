@@ -13,13 +13,6 @@ const Guess = ({sendJsonMessage, players, answers, currentPlayerId, playerId, pr
         setGuesses(copy);
     }
 
-    let disabled = true;
-    for (let guess of guesses) {
-        if (guess !== "none") {
-            disabled = false;
-        }
-    }
-
     const pickingPlayer = players.find((player:Player) => player.id === currentPlayerId);
     const isPicking = playerId === currentPlayerId;
     const playersWithoutSelf = players.filter((player:Player) => player.id !== playerId);
@@ -60,7 +53,7 @@ const Guess = ({sendJsonMessage, players, answers, currentPlayerId, playerId, pr
             </div>
 
             <div className='pt-4'>
-                <button className='button-orange p-1 pr-4 pl-4 disabled:opacity-50' disabled={disabled || !isPicking} onClick={submitGuess}><h4>
+                <button className='button-orange p-1 pr-4 pl-4 disabled:opacity-50' disabled={!isPicking} onClick={submitGuess}><h4>
                     {isPicking &&
                         "Submit Guess"
                     }    

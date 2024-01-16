@@ -439,7 +439,7 @@ function broadcastMessage(room: Room, type: string, data?: any) {
     for (let player of room.players) {
         if (player.disconnected) { continue }
         const client = connections[player.id];
-        if (client.readyState === WebSocket.OPEN) {
+        if (client !== undefined && client.readyState === WebSocket.OPEN) {
             const msgAdd = {...message, ...{playerId: player.id}};
             const toSend = JSON.stringify(msgAdd);
             client.send(toSend);
