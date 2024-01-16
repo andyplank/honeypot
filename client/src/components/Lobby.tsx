@@ -28,11 +28,11 @@ function Lobby({sendJsonMessage, isHost, remainingIcons}: {sendJsonMessage: any,
                     <h3 className='pb-4 lg:pb-10'>Select your icon:</h3>
                     <div className='grid grid-cols-3 gap-2 lg:grid-cols-5'>
                     {Object.keys(iconMap).map((iconName: string, idx:number) => {
-                        let iconClasses = "p-2 min-h-[80px] lg:min-h-[150px] 3xl-min-h-[200px] lg:max-w-[175px] 3xl:max-w-[225px] duration-500"
+                        let iconClasses = "p-2 min-h-[80px] lg:min-h-[150px] 3xl-min-h-[200px] lg:max-w-[175px] 3xl:max-w-[225px]"
                         if (!remainingIcons.includes(iconName)) {
-                            iconClasses += " filter grayscale p-2 brightness-75"
+                            iconClasses += " filter grayscale p-2 brightness-75 duration-100"
                         } else {
-                            iconClasses += " cursor-pointer hover:scale-110"
+                            iconClasses += " cursor-pointer hover:scale-110 duration-500"
                         }
                         return (
                             <div key={iconName+idx} className={iconClasses} onClick={() => selectIcon(iconName)}> 

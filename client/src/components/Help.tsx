@@ -10,7 +10,7 @@ export default function Help({open, setOpen, title, text}: {open: boolean, setOp
       as={Fragment}
     >
       <Dialog as="div" className="relative" onClose={setOpen}>
-        <div className="fixed inset-0 z-10 w-screen h-screen">
+        <div className="fixed inset-0 z-10 w-dvw h-dvh">
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
