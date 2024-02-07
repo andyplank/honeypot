@@ -1,16 +1,29 @@
 import { Player } from './Player';
 import PlayerIcon from './PlayerIcon';
 import AnswerInput from './AnswerInput';
+import { ForwardIcon } from '@heroicons/react/24/outline';
 
-const Answer = ({sendJsonMessage, prompt, players, playerId}: {sendJsonMessage: any, prompt: string, players: Player[], playerId:string}) => {
+const Answer = ({sendJsonMessage, prompt, players, playerId, isHost}: {sendJsonMessage: any, prompt: string, players: Player[], playerId:string, isHost:boolean}) => {
         
     const hasAnswered = players.find((player:Player) => player.id === playerId)?.hasAnswered || false;
+
+    const shuffle = () => {
+        sendJsonMessage({
+            "type": "shuffle",
+        });
+    }
 
     return (
         <div className="p-4">
             <div className="w-full p-6 md:p-10 shadow-xl rounded-2xl">
                 <div className='pb-4'>
-                    <h3 className='pb-20'>{prompt}</h3>
+                    <h3 className='pb-20 flex'>
+                        <span className='grow'>{prompt}</span>
+                        {isHost && 
+                        <button onClick={() => shuffle()}>
+                            <ForwardIcon className="h-9 w-9" aria-hidden="true" />
+                        </button>}
+                    </h3>
                     <AnswerInput sendJsonMessage={sendJsonMessage} hasAnswered={hasAnswered}/>
                 </div>
             </div>
@@ -23,7 +36,6 @@ const Answer = ({sendJsonMessage, prompt, players, playerId}: {sendJsonMessage: 
                     </h4>
                 ))}
                 </div>
-
             </div>
         </div>
     )

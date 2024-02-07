@@ -42,7 +42,7 @@ const Game = ({sendJsonMessage, lastMessageJson}: {sendJsonMessage: any, lastMes
         } else if (round === -2) {
             return <EndGame sendJsonMessage={sendJsonMessage} players={players} isHost={hostId===playerId} />
         } else {
-            return <Answer sendJsonMessage={sendJsonMessage} prompt={prompt} players={players} playerId={playerId}/>
+            return <Answer sendJsonMessage={sendJsonMessage} prompt={prompt} players={players} playerId={playerId} isHost={hostId===playerId}/>
         }
     }
 

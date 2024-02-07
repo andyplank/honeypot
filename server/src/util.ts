@@ -20,6 +20,7 @@ const typesDef = {
     join_room: 'join_room',
     start_game: 'start_game',
     submit_answer: 'submit_answer',
+    shuffle: 'shuffle',
     guess: 'guess',
     select_icon: 'select_icon',
     rejoin: 'rejoin',
@@ -59,6 +60,9 @@ function handleMessage(message: any, userId: any) {
             break;
         case typesDef.select_icon:
             selectIcon(data, userId);
+            break;
+        case typesDef.shuffle:
+            shuffle(data, userId);
             break;
         case typesDef.start_game:
             startGame(data, userId);
@@ -328,6 +332,39 @@ const guess = (data: any, userId: string) => {
     if (nextPlayer === undefined) { return }
     nextPlayer.canGuess = true;
     setPlayerTurn(room, nextPlayer);
+}
+
+const shuffle = (data: any, userId: string) => {
+    const room = getRoom(data.room_code);
+    if (room === null) { return }
+    if (room.hostId !== userId) { return }
+
+    room.guessing = false;
+    room.remainingAnswers = [];
+
+    // Reset player answers and canGuess to true
+    for (let player of room.players) {
+        player.answer = "";
+        player.hasAnswered = false;
+        player.canGuess = false;
+    }
+
+    room.players[room.firstPlayerIndex].canGuess = true;
+
+    let questionIndex = Math.floor(Math.random() * prompts.length);
+    if (room.pastQuestions.has(questionIndex)) {
+        if (room.pastQuestions.size === prompts.length) {
+            room.pastQuestions.clear();
+        }
+        while (questionIndex in room.pastQuestions) {
+            questionIndex = (questionIndex + 1) % prompts.length;
+        }
+    }
+    const question = prompts[questionIndex];
+    room.pastQuestions.add(questionIndex);
+    room.currQuestion = question;
+
+    broadcastMessage(room, "new_round");
 }
 
 const newRound = (roomCode: string) => {
