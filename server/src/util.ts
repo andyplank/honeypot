@@ -8,7 +8,7 @@ try {
     const fileContent = fs.readFileSync('./prompts.txt').toString();
     prompts = fileContent.split('\n');
 } catch (error) {
-    console.log("Error reading prompts.txt");
+    console.log("Error reading prompts.txt. Is prompts.txt in the server directory?");
 }
 
 const rooms:any = {};

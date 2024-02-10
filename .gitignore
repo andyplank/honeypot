@@ -1,4 +1,6 @@
 */build/*
+/server/src/public
+/server/prompts.txt
 
 # Logs
 logs
