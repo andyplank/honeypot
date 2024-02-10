@@ -20,9 +20,12 @@ const Answer = ({sendJsonMessage, prompt, players, playerId, isHost}: {sendJsonM
                     <h3 className='pb-20 flex'>
                         <span className='grow'>{prompt}</span>
                         {isHost && 
-                        <button onClick={() => shuffle()} className='flex'>
-                            <ForwardIcon className="h-9 w-9" aria-hidden="true" />
-                        </button>}
+                        <div className='flex items-start'>
+                            <button onClick={() => shuffle()}>
+                                <ForwardIcon className="h-9 w-9" aria-hidden="true" />
+                            </button>
+                        </div>
+                        }
                     </h3>
                     <AnswerInput sendJsonMessage={sendJsonMessage} hasAnswered={hasAnswered}/>
                 </div>
