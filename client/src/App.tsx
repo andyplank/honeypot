@@ -5,6 +5,7 @@ import Join from './components/Join';
 import './App.css'
 import Header from './components/Header';
 import Loader from './components/Loader';
+import PlayerIcon, { iconMap } from './components/PlayerIcon';
 
 export default function App() {
 	const WS_URL = process.env.REACT_APP_API_URL || 'ws://localhost:8000';
@@ -70,6 +71,14 @@ export default function App() {
 			<Header roomCode={roomCode} />
 			{view()}
 			<Loader />
+			<div className='hidden'>
+				{Object.keys(iconMap).map((iconName: string, idx:number) => 
+					<div key={iconName+idx+"-nodisp"} className=""> 
+						<PlayerIcon iconName={iconName} />
+					</div>
+					) 
+				}
+			</div>
 		</div>
   	);
 }
