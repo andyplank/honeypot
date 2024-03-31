@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import verifyInput from './InputVerify';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, roomCode: any, setRoomCode: any}) => {
         
@@ -43,33 +44,41 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
         <div className='grow bg-light-purple justify-center items-center flex'>
             <div>
                 {type !== "" && 
-                <div className='bg-white drop-shadow-lg shadow-sm p-5 md:p-10 text-center m-5 rounded-2xl'>
-                    <div className='pb-6'>
-                        <h3>Let's get started!</h3>
-                    </div>
-                    <div>
-                        <div className="pb-10">
-                            <h4 className='text-left pb-2'>Enter your name:</h4>
-                            <input name="username" type="text" aria-label="Username"
-                                value={username} onChange={(e) => usernameInput(e.target.value)} 
-                                className="orange-input" />
+                <div>
+                    <div className='bg-white drop-shadow-lg shadow-sm p-5 md:p-10 m-5 rounded-2xl'>
+                        <div className='pb-6 text-center'>
+                            <h3>Let's get started!</h3>
                         </div>
-                        {type === "join_room" && 
+                        <div>
                             <div className="pb-10">
-                                <h4 className='text-left pb-2'>Enter room code:</h4>
-                                <input name="roomCode" type="text" aria-label="Room code"
-                                    value={roomCode} onChange={(e) => roomCodeInput(e.target.value)} 
+                                <h4 className='text-left pb-2'>Enter your name:</h4>
+                                <input name="username" type="text" aria-label="Username"
+                                    value={username} onChange={(e) => usernameInput(e.target.value)} 
                                     className="orange-input" />
                             </div>
-                        }
-                        <div>
-                            <div className='pt-2'>
-                                <button className='button-orange w-full focus:ring hover:scale-110 duration-500 p-1 pr-4 pl-4' onClick={enterRoom} >
-                                    <p>Enter Game</p>
-                                </button>
+                            {type === "join_room" && 
+                                <div className="pb-10">
+                                    <h4 className='text-left pb-2'>Enter room code:</h4>
+                                    <input name="roomCode" type="text" aria-label="Room code"
+                                        value={roomCode} onChange={(e) => roomCodeInput(e.target.value)} 
+                                        className="orange-input" />
+                                </div>
+                            }
+                            <div>
+                                <div className='pt-2'>
+                                    <button className='button-orange w-full focus:ring hover:scale-110 duration-500 p-1 pr-4 pl-4' onClick={enterRoom} >
+                                        <p>Enter Game</p>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <button onClick={() => setType("")}>
+                            <div className="flex items-center">
+                                <ArrowLeftIcon className="h-9 w-9" aria-hidden="true" />
+                                <p>Go Back</p>
+                            </div>
+                    </button>
                 </div>
                 }
             </div>
