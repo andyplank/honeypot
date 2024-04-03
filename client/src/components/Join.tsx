@@ -13,7 +13,6 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
         const roomParam = queryParameters.get("room")
         if (roomParam === undefined || roomParam === null) return;
         roomCodeInput(roomParam);
-        setType("join_room");
     });
 
     const createRoom = () => {
@@ -44,6 +43,7 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
     const roomCodeInput = (inStr: string) => {
         if (!verifyInput(inStr, 6)) return;
         setRoomCode(inStr.toLocaleUpperCase());
+        setType("join_room");
     }
 
     return (
