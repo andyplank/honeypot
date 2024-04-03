@@ -13,6 +13,7 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
         const roomParam = queryParameters.get("room")
         if (roomParam === undefined || roomParam === null) return;
         roomCodeInput(roomParam);
+        setType("join_room");
     });
 
     const createRoom = () => {
@@ -28,6 +29,11 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
             "type": type,
             "name": username,
         });
+    };
+
+    const goBack = () => {
+        setType("");
+        setRoomCode("");
     };
 
     const usernameInput = (inStr: string) => {
@@ -52,15 +58,33 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
                         <div>
                             <div className="pb-10">
                                 <h4 className='text-left pb-2'>Enter your name:</h4>
-                                <input name="username" type="text" aria-label="Username"
-                                    value={username} onChange={(e) => usernameInput(e.target.value)} 
+                                <input 
+                                    name="username" 
+                                    type="text" 
+                                    aria-label="Username"
+                                    value={username} 
+                                    onChange={(e) => usernameInput(e.target.value)} 
+                                    onKeyDown={(e) => { 
+                                        if (e.key === "Enter") { 
+                                            enterRoom(); 
+                                        } 
+                                    }}
                                     className="orange-input" />
                             </div>
                             {type === "join_room" && 
                                 <div className="pb-10">
                                     <h4 className='text-left pb-2'>Enter room code:</h4>
-                                    <input name="roomCode" type="text" aria-label="Room code"
-                                        value={roomCode} onChange={(e) => roomCodeInput(e.target.value)} 
+                                    <input 
+                                        name="roomCode" 
+                                        type="text" 
+                                        aria-label="Room code"
+                                        value={roomCode} 
+                                        onChange={(e) => roomCodeInput(e.target.value)} 
+                                        onKeyDown={(e) => { 
+                                            if (e.key === "Enter") { 
+                                                enterRoom(); 
+                                            } 
+                                        }}
                                         className="orange-input" />
                                 </div>
                             }
@@ -73,7 +97,7 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
                             </div>
                         </div>
                     </div>
-                    <button onClick={() => setType("")}>
+                    <button onClick={goBack}>
                             <div className="flex items-center">
                                 <ArrowLeftIcon className="h-9 w-9" aria-hidden="true" />
                                 <p>Go Back</p>

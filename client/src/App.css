@@ -67,6 +67,10 @@ p {
     line-height: normal;
 }
 
+span {
+    font-family: Mochiy Pop One;
+}
+
 /* Reset some default styles */
 html, body {
     margin: 0;
@@ -123,6 +127,14 @@ html, body {
 .button-orange {
     border-radius: .5rem;
     background-color: var(--orange);
+}
+
+.tooltip {
+    @apply invisible absolute;
+}
+  
+.has-tooltip:hover .tooltip {
+    @apply visible z-50;
 }
 
 @media only screen and (max-width: 640px) {

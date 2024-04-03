@@ -20,7 +20,8 @@ const Answer = ({sendJsonMessage, prompt, players, playerId, isHost}: {sendJsonM
                     <h3 className='pb-20 flex'>
                         <span className='grow'>{prompt}</span>
                         {isHost && 
-                        <div className='pl-2 flex items-start'>
+                        <div className='has-tooltip pl-2 flex items-start'>
+                            <span className='tooltip rounded shadow-lg p-1 m-2 bg-lightPurple text-center text-xs -mt-12 mr-4'>Skip this prompt</span>
                             <button onClick={() => shuffle()}>
                                 <ForwardIcon className="h-9 w-9" aria-hidden="true" />
                             </button>
