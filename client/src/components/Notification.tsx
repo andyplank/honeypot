@@ -4,7 +4,7 @@ import { Transition } from '@headlessui/react';
 
 function Notification({text}: {text: string}) {
 
-    const [message, setMessage] = useState<string>("eee");
+    const [message, setMessage] = useState<string>("");
     const [show, setShow] = useState(false);
 
     useEffect(() => {

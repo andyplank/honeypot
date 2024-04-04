@@ -1,12 +1,20 @@
 import {useEffect, useState} from 'react';
 import verifyInput from './InputVerify';
+import ValidationMessage from "./ValidationMessage";
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
-const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, roomCode: any, setRoomCode: any}) => {
+const Join = ({sendJsonMessage, roomCode, setRoomCode, validationMessage, setValidationMessage}: {sendJsonMessage: any, roomCode: any, setRoomCode: any, validationMessage: any, setValidationMessage: any}) => {
         
     const [username, setUsername] = useState('');
     const [type, setType] = useState('');
-    
+    const [show, setShow] = useState(false);
+
+    let textToDisplay:string = "";
+
+    if (validationMessage !== null) {
+        textToDisplay = validationMessage ? validationMessage: "";
+    }
+
     useEffect(() => {
         const queryParameters = new URLSearchParams(window.location.search)
         window.history.pushState({}, document.title, "/")
@@ -33,6 +41,9 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
     const goBack = () => {
         setType("");
         setRoomCode("");
+        setShow(false);
+        setValidationMessage("");
+        textToDisplay = "";
     };
 
     const usernameInput = (inStr: string) => {
@@ -49,6 +60,9 @@ const Join = ({sendJsonMessage, roomCode, setRoomCode}: {sendJsonMessage: any, r
     return (
         <div className='grow bg-light-purple justify-center items-center flex'>
             <div>
+                <div className="pr-4 pb-12 pl-4">
+                    {<ValidationMessage text={textToDisplay} show={show} setShow={setShow}/>}
+                </div>
                 {type !== "" && 
                 <div>
                     <div className='bg-white drop-shadow-lg shadow-sm p-5 md:p-10 m-5 rounded-2xl'>

@@ -2,6 +2,7 @@ import { Room, Player, Message } from './types';
 import { WebSocket } from 'ws';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
+import { send } from 'process';
 
 let prompts:string[] = ["Test prompt"];
 try {
@@ -155,7 +156,11 @@ function deleteRoom(roomCode: string) {
 }
 
 function createRoom(data: any, userId: any) {
-    if (!validString(data.name, 10)) return;
+    if (!validString(data.name, 10)){
+        sendMessageToPlayer(userId, "Invalid name! Please try again."); 
+        return; 
+    };
+
     const host = createPlayer(data.name, userId, "bear");
     const code = data.room_code ? data.room_code : generateRandomString(6);
     if (getRoom(code) !== null) { return }
@@ -185,14 +190,34 @@ function createRoom(data: any, userId: any) {
 }
 
 function joinRoom(data: any, userId: any) {
-    if (!validString(data.name, 10)) return;
+    if (!validString(data.name, 10)){
+        sendMessageToPlayer(userId, "Invalid name! Please try again."); 
+        return; 
+    } 
+
+    if (data.room_code === undefined || data.room_code === "") {
+        sendMessageToPlayer(userId, "Enter a room code or create a new room!");
+    }
+
     const room = getRoom(data.room_code);
-    if (room === null || room.roundNumber !== -1) { return }
+    if (room === null) {
+        sendMessageToPlayer(userId, "Invalid room code!"); 
+        return; 
+    } else if (room.roundNumber !== -1) {
+        sendMessageToPlayer(userId, "Game already in progress!"); 
+        return; 
+    }
 
     // User is already in a room
-    if (userId in playerToRoom) { return }
+    if (userId in playerToRoom) { 
+        sendMessageToPlayer(userId, "You are already in a room!");
+        return  
+    }
     const index = room.players.findIndex((player: Player) => player.id === userId);
-    if (index !== -1) { return }
+    if (index !== -1) { 
+        sendMessageToPlayer(userId, "You are already in this room!");
+        return 
+    }
 
     // get the first icon from the remainingIcons array and remove it from the array
     const icon:string = room.remainingIcons.keys().next().value;
@@ -481,6 +506,15 @@ function broadcastMessage(room: Room, type: string, data?: any) {
             const toSend = JSON.stringify(msgAdd);
             client.send(toSend);
         }
+    }
+}
+
+function sendMessageToPlayer(playerId: string, message: string) {
+    const client = connections[playerId];
+    if (client !== undefined && client.readyState === WebSocket.OPEN) {
+        const msgAdd = {validationMessage: message, playerId: playerId};
+        const toSend = JSON.stringify(msgAdd);
+        client.send(toSend);
     }
 }
 

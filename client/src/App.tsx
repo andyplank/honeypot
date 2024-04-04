@@ -12,6 +12,7 @@ export default function App() {
 	console.log("app render");
 
     const [roomCode, setRoomCode] = useState('');
+	const [validationMessage, setValidationMessage] = useState('');
 	const [playerId, setPlayerId] = useState('');
     const {lastMessage, sendJsonMessage} = useWebSocket(WS_URL, {
         onOpen: () => {
@@ -56,11 +57,14 @@ export default function App() {
 		if (json.playerId !== undefined && json.playerId !== playerId) {
 			setPlayerId(json.playerId);
 		}
+		if (json.validationMessage != undefined && validationMessage !== json.validationMessage) {
+			setValidationMessage(json.validationMessage);
+		}
 	}
 
 	const view = () => {
 		if (json === null || json.round === undefined) {
-			return <Join sendJsonMessage={sendJsonToServer} roomCode={roomCode} setRoomCode={setRoomCode} />
+			return <Join sendJsonMessage={sendJsonToServer} roomCode={roomCode} setRoomCode={setRoomCode} validationMessage={validationMessage} setValidationMessage={setValidationMessage}/>
 		} else {
 			return <Game sendJsonMessage={sendJsonToServer} lastMessageJson={json} />
 		}
